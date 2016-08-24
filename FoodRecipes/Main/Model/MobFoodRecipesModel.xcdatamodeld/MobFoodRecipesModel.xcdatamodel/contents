@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15A284" minimumToolsVersion="Xcode 7.0">
+    <entity name="MobFoodRecipes" representedClassName="MobFoodRecipes" syncable="YES">
+        <attribute name="checkData" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="cid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="img" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="method" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MobFoodRecipes" inverseName="relationship" inverseEntity="MobFoodRecipes" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="MobFoodRecipes" positionX="-63" positionY="-18" width="128" height="195"/>
+    </elements>
+</model>
