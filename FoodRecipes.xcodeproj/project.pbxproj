@@ -106,9 +106,6 @@
 		D5CFC10C1D61404700AF9464 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0DB1D61404700AF9464 /* ViewController.m */; };
 		D5CFC10D1D61404700AF9464 /* MobFoodCategoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0DE1D61404700AF9464 /* MobFoodCategoryModel.m */; };
 		D5CFC10E1D61404700AF9464 /* MobFoodClassModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0E01D61404700AF9464 /* MobFoodClassModel.m */; };
-		D5CFC10F1D61404700AF9464 /* MobHistoryDayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0E21D61404700AF9464 /* MobHistoryDayModel.m */; };
-		D5CFC1101D61404700AF9464 /* MobIdentifierModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0E41D61404700AF9464 /* MobIdentifierModel.m */; };
-		D5CFC1111D61404700AF9464 /* MobWeatherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0E61D61404700AF9464 /* MobWeatherModel.m */; };
 		D5CFC1121D61404700AF9464 /* MobFoodListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0E91D61404700AF9464 /* MobFoodListCell.m */; };
 		D5CFC1131D61404700AF9464 /* MobFoodListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D5CFC0EA1D61404700AF9464 /* MobFoodListCell.xib */; };
 		D5CFC1141D61404700AF9464 /* MobViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D5CFC0EC1D61404700AF9464 /* MobViewCell.m */; };
@@ -338,12 +335,6 @@
 		D5CFC0DE1D61404700AF9464 /* MobFoodCategoryModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobFoodCategoryModel.m; sourceTree = "<group>"; };
 		D5CFC0DF1D61404700AF9464 /* MobFoodClassModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobFoodClassModel.h; sourceTree = "<group>"; };
 		D5CFC0E01D61404700AF9464 /* MobFoodClassModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobFoodClassModel.m; sourceTree = "<group>"; };
-		D5CFC0E11D61404700AF9464 /* MobHistoryDayModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobHistoryDayModel.h; sourceTree = "<group>"; };
-		D5CFC0E21D61404700AF9464 /* MobHistoryDayModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobHistoryDayModel.m; sourceTree = "<group>"; };
-		D5CFC0E31D61404700AF9464 /* MobIdentifierModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobIdentifierModel.h; sourceTree = "<group>"; };
-		D5CFC0E41D61404700AF9464 /* MobIdentifierModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobIdentifierModel.m; sourceTree = "<group>"; };
-		D5CFC0E51D61404700AF9464 /* MobWeatherModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobWeatherModel.h; sourceTree = "<group>"; };
-		D5CFC0E61D61404700AF9464 /* MobWeatherModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobWeatherModel.m; sourceTree = "<group>"; };
 		D5CFC0E81D61404700AF9464 /* MobFoodListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobFoodListCell.h; sourceTree = "<group>"; };
 		D5CFC0E91D61404700AF9464 /* MobFoodListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobFoodListCell.m; sourceTree = "<group>"; };
 		D5CFC0EA1D61404700AF9464 /* MobFoodListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MobFoodListCell.xib; sourceTree = "<group>"; };
@@ -857,12 +848,6 @@
 				D5CFC0DE1D61404700AF9464 /* MobFoodCategoryModel.m */,
 				D5CFC0DF1D61404700AF9464 /* MobFoodClassModel.h */,
 				D5CFC0E01D61404700AF9464 /* MobFoodClassModel.m */,
-				D5CFC0E11D61404700AF9464 /* MobHistoryDayModel.h */,
-				D5CFC0E21D61404700AF9464 /* MobHistoryDayModel.m */,
-				D5CFC0E31D61404700AF9464 /* MobIdentifierModel.h */,
-				D5CFC0E41D61404700AF9464 /* MobIdentifierModel.m */,
-				D5CFC0E51D61404700AF9464 /* MobWeatherModel.h */,
-				D5CFC0E61D61404700AF9464 /* MobWeatherModel.m */,
 				D56318081D66D3F5002B56D2 /* MobRecommendModel.h */,
 				D56318091D66D3F5002B56D2 /* MobRecommendModel.m */,
 				D5DADE0D1D66E28C007FBB0B /* MobFoodRecipesModel.xcdatamodeld */,
@@ -1088,7 +1073,6 @@
 				D5770ADB1D62B02E00B4460D /* UIButton+CMWebCache.m in Sources */,
 				D5FEDC921D6BED550080DFCC /* MobMyCollectViewController.m in Sources */,
 				D53C6FDF1D66F6D900F5B577 /* MJRefreshConst.m in Sources */,
-				D5CFC1101D61404700AF9464 /* MobIdentifierModel.m in Sources */,
 				D5770ADE1D62B02E00B4460D /* UIImage+CMWebP.m in Sources */,
 				D5770AE41D62B02E00B4460D /* MXPageControl.m in Sources */,
 				D5CFC14C1D614A7800AF9464 /* FAFDownloadWebImage.m in Sources */,
@@ -1118,7 +1102,6 @@
 				D53C6FD91D66F6D900F5B577 /* MJRefreshBackNormalFooter.m in Sources */,
 				D55925AA1D6D31D00061FDF4 /* LeftViewController.m in Sources */,
 				D5770AD71D62B02E00B4460D /* CMSDWebImageManager.m in Sources */,
-				D5CFC10F1D61404700AF9464 /* MobHistoryDayModel.m in Sources */,
 				D5CFC1071D61404700AF9464 /* MobFoodDetailViewController.m in Sources */,
 				D5770AD21D62B02E00B4460D /* CMSDImageCache.m in Sources */,
 				D5CFC1511D614A7800AF9464 /* SDWebImageDecoder.m in Sources */,
@@ -1133,7 +1116,6 @@
 				D53C6FDC1D66F6D900F5B577 /* MJRefreshNormalHeader.m in Sources */,
 				D5770ADA1D62B02E00B4460D /* NSData+CMImageContentType.m in Sources */,
 				D5CFC15A1D614A7800AF9464 /* UIImageView+HighlightedWebCache.m in Sources */,
-				D5CFC1111D61404700AF9464 /* MobWeatherModel.m in Sources */,
 				D5770AD81D62B02E00B4460D /* CMSDWebImagePrefetcher.m in Sources */,
 				D5DADE151D66E3E2007FBB0B /* MobFoodRecipes.m in Sources */,
 				D5770ADD1D62B02E00B4460D /* UIImage+CMMultiFormat.m in Sources */,

@@ -95,6 +95,7 @@
 - (void)addTapGesture
 {
     UIView *rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Width * 0.25, Height)];
+    rightView.backgroundColor = [UIColor redColor];
     [self.mainView addSubview:rightView];
     _rightView = rightView;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touch:)];
@@ -105,18 +106,29 @@
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
         [UIView animateWithDuration:0.2 animations:^{
-            _mainView.x = 0;
-            [self.rightView removeFromSuperview];
+            _mainView.x = 0.0f;
+        } completion:^(BOOL finished) {
+            [self backToViewController];
         }];
     }
 }
 
 - (void)showLeftView
 {
+    [self addTapGesture];
     self.mainView.x = _screenWidth / 4.f * 3;
     self.viewControllers = self.navigationController.viewControllers;
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
+         
+- (void)backToViewController
+ {
+     [self.rightView removeFromSuperview];
+     if (self.viewControllers.count > 0) {
+         self.navigationController.viewControllers = self.viewControllers;
+         self.viewControllers = nil;
+     }
+ }
 
 - (void)panGestureEvent:(UIPanGestureRecognizer *)gesture {
     
@@ -131,10 +143,8 @@
         // 过滤掉向左侧滑过头的情形
         _mainView.x = 0.f;
         self.navBar.x = -0.75 * Width;
-//        [self.rightView removeFromSuperview];
-//        if (self.viewControllers.count > 0) {
-//            self.navigationController.viewControllers = self.viewControllers;
-//        }
+        
+        [self backToViewController];
         
     } else {
         
@@ -172,6 +182,10 @@
                 self.navBar.x = _mainView.x - 0.75 * Width;
                 if (_mainView.x == gap) {
                     [self addTapGesture];
+                }
+            } completion:^(BOOL finished) {
+                if (_mainView.x == 0) {
+                    [self backToViewController];
                 }
             }];
         }
