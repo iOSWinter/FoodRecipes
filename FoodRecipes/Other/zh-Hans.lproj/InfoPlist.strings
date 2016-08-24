@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  FoodRecipes
+
+  Created by WinterChen on 16/8/15.
+  Copyright © 2016年 WinterChen. All rights reserved.
+*/
+
+CFBundleDisplayName = "美食菜谱";
