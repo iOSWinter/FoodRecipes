@@ -165,7 +165,7 @@
     CGPoint velocity    = [gesture velocityInView:gesture.view];
     
     CGFloat gap               = _screenWidth * 0.75f;
-    CGFloat sensitivePosition = _screenWidth * 0.3f;
+    CGFloat sensitivePosition = _screenWidth * 0.5f;
     
     if (velocity.x < 0 && _mainView.x <= 0) {
         
