@@ -68,7 +68,6 @@
     [self.view endEditing:YES];
     if (self.dataArray.count == 0) {
         [self.indicatorView startAnimating];
-        self.tableView.mj_footer = nil;
     }
     NSInteger pageMod = self.dataArray.count % 20;
     if (pageMod != 0) {
@@ -87,8 +86,6 @@
         if (response.error) {
             [FAFProgressHUD showError:@"查询不到数据" icon:nil color:nil];
             [self.tableView reloadData];
-            [self.tableView.mj_footer removeFromSuperview];
-            self.tableView.mj_footer = nil;
         } else {
             self.searchResult = YES;
             [self.tableView registerNib:[UINib nibWithNibName:@"MobFoodListCell" bundle:nil] forCellReuseIdentifier:@"searchListCell"];
@@ -187,10 +184,11 @@
     }
 }
 
-
 - (void)showRecord
 {
     [self.dataArray removeAllObjects];
+    [self.tableView.mj_footer removeFromSuperview];
+    self.tableView.mj_footer = nil;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"recordCell"];
     self.tableView.rowHeight = 44;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
