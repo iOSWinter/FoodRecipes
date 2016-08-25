@@ -40,6 +40,7 @@
 		D55CE6461D600838002347D1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D55CE6451D600838002347D1 /* libz.tbd */; };
 		D55CE6481D600845002347D1 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D55CE6471D600845002347D1 /* libstdc++.tbd */; };
 		D55CE64A1D600852002347D1 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D55CE6491D600852002347D1 /* JavaScriptCore.framework */; };
+		D55DCE9D1D6ECDFA00278CED /* MobRecommendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D55DCE9C1D6ECDFA00278CED /* MobRecommendViewController.m */; };
 		D563180A1D66D3F5002B56D2 /* MobRecommendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D56318091D66D3F5002B56D2 /* MobRecommendModel.m */; };
 		D5770AA01D62908D00B4460D /* MobMenuCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D5770A9E1D62908D00B4460D /* MobMenuCollectionCell.m */; };
 		D5770AA11D62908D00B4460D /* MobMenuCollectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D5770A9F1D62908D00B4460D /* MobMenuCollectionCell.xib */; };
@@ -208,6 +209,8 @@
 		D55CE6451D600838002347D1 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		D55CE6471D600845002347D1 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		D55CE6491D600852002347D1 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		D55DCE9B1D6ECDFA00278CED /* MobRecommendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobRecommendViewController.h; sourceTree = "<group>"; };
+		D55DCE9C1D6ECDFA00278CED /* MobRecommendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobRecommendViewController.m; sourceTree = "<group>"; };
 		D56318081D66D3F5002B56D2 /* MobRecommendModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobRecommendModel.h; sourceTree = "<group>"; };
 		D56318091D66D3F5002B56D2 /* MobRecommendModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobRecommendModel.m; sourceTree = "<group>"; };
 		D5770A9D1D62908D00B4460D /* MobMenuCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobMenuCollectionCell.h; sourceTree = "<group>"; };
@@ -835,6 +838,8 @@
 				D5FEDC911D6BED550080DFCC /* MobMyCollectViewController.m */,
 				D55B55FE1D6AD28400706A35 /* MobAdEditViewController.h */,
 				D55B55FF1D6AD28400706A35 /* MobAdEditViewController.m */,
+				D55DCE9B1D6ECDFA00278CED /* MobRecommendViewController.h */,
+				D55DCE9C1D6ECDFA00278CED /* MobRecommendViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1104,6 +1109,7 @@
 				D5770AD71D62B02E00B4460D /* CMSDWebImageManager.m in Sources */,
 				D5CFC1071D61404700AF9464 /* MobFoodDetailViewController.m in Sources */,
 				D5770AD21D62B02E00B4460D /* CMSDImageCache.m in Sources */,
+				D55DCE9D1D6ECDFA00278CED /* MobRecommendViewController.m in Sources */,
 				D5CFC1511D614A7800AF9464 /* SDWebImageDecoder.m in Sources */,
 				D53C6FD31D66F6D900F5B577 /* MJRefreshFooter.m in Sources */,
 				D5CFC10D1D61404700AF9464 /* MobFoodCategoryModel.m in Sources */,

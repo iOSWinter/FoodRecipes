@@ -44,14 +44,15 @@
         self.descHeightConstraints.constant = descHeight <= 57 ? descHeight : 57;
     } else {
         MobCarefulSelectionModel *model1 = (MobCarefulSelectionModel *)model;
-        if (model1.thumbnails) {
-            [self.img sd_setImageWithURL:[NSURL URLWithString:[model1.thumbnails componentsSeparatedByString:@"$"].lastObject]];
+        NSString *imgUrl = [model1.thumbnails componentsSeparatedByString:@"$"].lastObject;
+        if ([imgUrl containsString:@"jpg"]) {
+            [self.img sd_setImageWithURL:[NSURL URLWithString:imgUrl]];
             self.imgWidthConstraints.constant = 104;
         } else {
             self.imgWidthConstraints.constant = 0;
         }
         self.title.text = model1.title;
-        self.desc.text = model1.pubTime;
+        self.desc.text = [model1.pubTime componentsSeparatedByString:@" "].lastObject;
     }
 }
 

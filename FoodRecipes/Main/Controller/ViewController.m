@@ -12,6 +12,7 @@
 #import "MobSearchViewController.h"
 #import "MobAdEditViewController.h"
 #import "MobMyCollectViewController.h"
+#import "MobRecommendViewController.h"
 #import "UIView+SetRect.h"
 
 @interface ViewController () <LeftViewControllerDelegate>
@@ -32,6 +33,10 @@
 @property (nonatomic, strong) UINavigationBar *navBar;
 @property (nonatomic, strong) UIView *rightView;
 @property (nonatomic, strong) NSArray *viewControllers;
+@property (nonatomic, strong) NSString *titleName;
+@property (nonatomic, assign) BOOL special;
+@property (nonatomic, strong) UIImageView *imgView;
+
 @end
 
 @implementation ViewController
@@ -42,7 +47,7 @@
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStyleDone target:nil action:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLeftView) name:@"showLeftView" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLeftView:) name:@"showLeftView" object:nil];
     
     _screenWidth = Width;
     // LeftViewController
@@ -69,37 +74,51 @@
 
 - (void)setupNavBar
 {
-    UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(-0.75 * Width, 0, Width * 1.75, 44)];
+    UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(self.special ? 0 : -0.75 * Width, 0, Width * 1.75, 44)];
     [navBar setBackgroundImage:[UIImage imageNamed:@"nav"] forBarMetrics:UIBarMetricsDefault];
-    UINavigationItem *navItem = [[UINavigationItem alloc] init];
-    [navItem setRightBarButtonItems:@[[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"search"] style:UIBarButtonItemStyleDone target:self action:@selector(searchFood)]]];
-    navBar.items = @[navItem];
-    navBar.subviews[1].centerX = 0.75 * Width + Width * 0.5;
+    [navBar setTintColor:[UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1]];
+    if (!self.special) {
+        UINavigationItem *navItem = [[UINavigationItem alloc] init];
+        [navItem setRightBarButtonItems:@[[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"search"] style:UIBarButtonItemStyleDone target:self action:@selector(searchFood)]]];
+        navBar.items = @[navItem];
+    }
     UILabel *personal = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, Width * 0.75, 44)];
     personal.font = [UIFont boldSystemFontOfSize:17];
     personal.textAlignment = NSTextAlignmentCenter;
     personal.text = @"个人中心";
     personal.textColor = [UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1];
     [navBar addSubview:personal];
+    if (self.special) {
+        UIImageView *back = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"backIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
+        back.frame = CGRectMake(Width * 0.75 + 4, 10.5, 18, 23);
+        [back setTintColor:[UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1]];
+        [navBar addSubview:back];
+        UIImageView *share = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"shareIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
+        share.frame = CGRectMake(Width * 1.75 - 45, 6, 29, 30);
+        [share setTintColor:[UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1]];
+        [navBar addSubview:share];
+    }
     UILabel *titleName = [[UILabel alloc] initWithFrame:CGRectMake(0.75 * Width, 0, Width, 44)];
     titleName.font = [UIFont boldSystemFontOfSize:17];
     titleName.textAlignment = NSTextAlignmentCenter;
-    titleName.text = @"美食秘方";
+    titleName.text = self.special ? self.titleName : @"美食秘方";
     titleName.textColor = [UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1];
     [navBar addSubview:titleName];
     [self.navigationController.navigationBar addSubview:navBar];
     _navBar = navBar;
     self.mainViewController.navBar = navBar;
+    self.special = NO;
 }
 
 - (void)addTapGesture
 {
-    UIView *rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Width * 0.25, Height)];
-    rightView.backgroundColor = [UIColor redColor];
-    [self.mainView addSubview:rightView];
-    _rightView = rightView;
+    if (self.rightView == nil) {
+        UIView *rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, Width * 0.25, Height)];
+        [self.mainView addSubview:rightView];
+        _rightView = rightView;
+    }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touch:)];
-    [rightView addGestureRecognizer:tap];
+    [self.rightView addGestureRecognizer:tap];
 }
 
 - (void)touch:(UITapGestureRecognizer *)gesture
@@ -107,26 +126,36 @@
     if (gesture.state == UIGestureRecognizerStateEnded) {
         [UIView animateWithDuration:0.2 animations:^{
             _mainView.x = 0.0f;
+            self.navBar.x = _mainView.x - 0.75 * Width;
         } completion:^(BOOL finished) {
             [self backToViewController];
         }];
     }
 }
 
-- (void)showLeftView
+- (void)showLeftView:(NSNotification *)noti
 {
-    [self addTapGesture];
-    self.mainView.x = _screenWidth / 4.f * 3;
     self.viewControllers = self.navigationController.viewControllers;
     [self.navigationController popToRootViewControllerAnimated:YES];
+    UIImageView *imgView = noti.object;
+    self.titleName = noti.userInfo.allValues.firstObject;
+    [self.mainView addSubview:imgView];
+    _imgView = imgView;
+    self.special = YES;
+    [self addTapGesture];
+    self.mainView.x = _screenWidth * 0.75f;
+    [self.leftViewController updateCachesSize];
 }
          
 - (void)backToViewController
  {
      [self.rightView removeFromSuperview];
+     self.rightView = nil;
      if (self.viewControllers.count > 0) {
          self.navigationController.viewControllers = self.viewControllers;
          self.viewControllers = nil;
+         [self.navBar removeFromSuperview];
+         [self.imgView removeFromSuperview];
      }
  }
 
@@ -135,8 +164,8 @@
     CGPoint translation = [gesture translationInView:gesture.view];
     CGPoint velocity    = [gesture velocityInView:gesture.view];
     
-    CGFloat gap               = _screenWidth / 4.f * 3;
-    CGFloat sensitivePosition = _screenWidth / 2.f;
+    CGFloat gap               = _screenWidth * 0.75f;
+    CGFloat sensitivePosition = _screenWidth * 0.3f;
     
     if (velocity.x < 0 && _mainView.x <= 0) {
         
@@ -182,6 +211,7 @@
                 self.navBar.x = _mainView.x - 0.75 * Width;
                 if (_mainView.x == gap) {
                     [self addTapGesture];
+                    [self.leftViewController updateCachesSize];
                 }
             } completion:^(BOOL finished) {
                 if (_mainView.x == 0) {
@@ -205,12 +235,17 @@
 {
     self.mainView.x = 0;
     self.navBar.x = self.mainView.x - 0.75 * Width;
+    [self.rightView removeFromSuperview];
+    self.rightView = nil;
     [self.navBar removeFromSuperview];
     if (index == 1) {
         MobMyCollectViewController *vc = [[MobMyCollectViewController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
-    } else {
+    } else if (index == 2) {
         MobAdEditViewController *vc = [[MobAdEditViewController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    } else if (index == 3) {
+        MobRecommendViewController *vc = [[MobRecommendViewController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

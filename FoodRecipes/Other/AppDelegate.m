@@ -24,6 +24,13 @@
     [navBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1]}];
     [navBar setTranslucent:NO];
     
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(30 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+            [application registerUserNotificationSettings:settings];
+        }
+    });
+    
     return YES;
 }
 
@@ -33,8 +40,34 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+     UIBackgroundTaskIdentifier taskID = [application beginBackgroundTaskWithExpirationHandler:^{
+        if (taskID != UIBackgroundTaskInvalid)
+        {
+            [application cancelAllLocalNotifications];
+            UILocalNotification *notification = [[UILocalNotification alloc] init];
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+            NSString *today = [dateFormatter stringFromDate:[NSDate date]];
+            [dateFormatter setDateFormat:@"HHmmss"];
+            NSString *nowString = [dateFormatter stringFromDate:[NSDate date]];
+            if (nowString.integerValue - 90000 > 0) {
+                [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+                today = [dateFormatter stringFromDate:[[NSDate date] dateByAddingTimeInterval:3600 * 24]];
+            }
+            [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            notification.fireDate = [dateFormatter dateFromString:[today stringByAppendingString:@" 09:00:00"]];
+            notification.repeatInterval = kCFCalendarUnitDay;
+            notification.soundName = UILocalNotificationDefaultSoundName;
+            NSArray *preArray = @[@"忙碌的一天又开始了吧?", @"曾经让你流口水的那道美食你还记得吗?", @"这里有你熟悉的美食味道...", @"你属于需要特殊照顾的人群吗?我们也同样为你甄选美食..."];
+            NSArray *subArray = @[@"我们为您准备了丰盛的美食,赶快戳进去查看吧!", @"只有身体是自己的,一定要好好犒劳自己!马上行动...", @"美食查收不用谢!"];
+            NSInteger preI = arc4random() % preArray.count;
+            NSInteger subI = arc4random() % subArray.count;
+            notification.alertBody = [preArray[preI] stringByAppendingString:subArray[subI]];
+            [application scheduleLocalNotification:notification];
+            [application endBackgroundTask:taskID];
+        }
+    }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

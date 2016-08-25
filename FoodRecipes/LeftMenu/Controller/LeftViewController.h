@@ -19,4 +19,6 @@
 
 @property (nonatomic, weak) id<LeftViewControllerDelegate> delegate;
 
+- (void)updateCachesSize;
+
 @end

@@ -37,17 +37,13 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"shareIcon"] style:UIBarButtonItemStyleDone target:self action:@selector(shareItemClicked)];
     
-    self.indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.indicatorView.center = CGPointMake([UIScreen mainScreen].bounds.size.width * 0.5, [UIScreen mainScreen].bounds.size.height * 0.5);
     self.indicatorView.color = [UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1];
     [self.view addSubview:self.indicatorView];
     [self fetchCollectData];
     
-//    if (self.model.thumbnail) {
-//        [self.img sd_setImageWithURL:[NSURL URLWithString:self.model.thumbnail]];
-//    } else {
-        self.imgHeightConstriants.constant = 0;
-//    }
+    self.imgHeightConstriants.constant = 0;
     self.foodTitle.text = self.model.recipe.title;
     NSString *recipes = [[[self.model.recipe.ingredients substringWithRange:NSMakeRange(1, self.model.recipe.ingredients.length - 2)] stringByReplacingOccurrencesOfString:@"\"" withString:@""] stringByReplacingOccurrencesOfString:@"材料：" withString:@""];
     self.desc.text = recipes ?: @"略";
@@ -79,20 +75,12 @@
 
 - (void)fetchCollectData
 {
-//    [MobAPI sendRequestWithInterface:@"/ucache/del" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:@"WB2545122455NO.1" encode:YES]} onResult:^(MOBAResponse *response) {
-//        if (!response.error) {
-//            response.responder[@"result"][@"data"];
-//        }
-//    }];
     self.v = @",";
-//    self.collectButton.hidden = YES;
     if (((AppDelegate *)[UIApplication sharedApplication].delegate).uid == nil) {
-//        self.collectButton.hidden = NO;
         return;
     }
     [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid encode:YES]} onResult:^(MOBAResponse *response) {
         if (!response.error) {
-//            self.collectButton.hidden = NO;
             NSArray *dataArray = response.responder[@"result"][@"data"];
             self.v = dataArray.firstObject[@"v"];
             NSArray *collectArray = [self.v componentsSeparatedByString:@","];
@@ -202,8 +190,21 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"showLeftView" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"showLeftView" object:[self screenView:self.view] userInfo:@{@"title" : self.title}];
     }
+}
+
+- (UIImageView *)screenView:(UIView *)view
+{
+    // 1.开启上下文,使用参数之后,截出来的是原图（YES  0.0 质量高）
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, YES, 0.0);
+    // 2.将View的图层渲染到上下文
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    // 3.获取此时上下文中的图片
+    UIImage *snapshortImg = UIGraphicsGetImageFromCurrentImageContext();
+    // 4.关闭上下文
+    UIGraphicsEndImageContext();
+    return [[UIImageView alloc] initWithImage:snapshortImg];
 }
 
 - (NSMutableArray *)cellHeightArray

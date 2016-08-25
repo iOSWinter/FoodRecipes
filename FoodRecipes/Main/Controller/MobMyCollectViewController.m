@@ -35,14 +35,19 @@
     }
     self.indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.indicatorView.center = self.view.center;
-    self.indicatorView.color = [UIColor grayColor];
+    self.indicatorView.color = [UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1];
     [self.view addSubview:self.indicatorView];
     [self.indicatorView startAnimating];
-    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid encode:YES]} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/get" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid encode:YES]} onResult:^(MOBAResponse *response) {
+        [self.indicatorView stopAnimating];
         if (!response.error) {
-            NSArray *dataArray = response.responder[@"result"][@"data"];
-            NSString *vString = dataArray.firstObject[@"v"];
+            NSDictionary *dataDict = response.responder[@"result"];
+            NSString *vString = dataDict[@"v"];
             NSArray *collectArray = [vString componentsSeparatedByString:@","];
+            if (collectArray.count == 2) {
+                [FAFProgressHUD show:@"您还没有收藏任何美食" icon:nil view:self.view color:nil];
+                return;
+            }
             __block NSInteger finishRequestCount = 0;
             for (NSInteger i = 0; i < collectArray.count - 2; i++) {
                 [self.dataArray addObject:@""];
@@ -50,8 +55,8 @@
             for (NSInteger i = 0; i < collectArray.count - 2; i++) {
                 NSArray *idArray = [collectArray[i] componentsSeparatedByString:@"/"];
                 NSString *menuId = [[@"00100010" stringByAppendingString:idArray.firstObject] stringByAppendingString:[[NSString stringWithFormat:@"%li", (long)(10000000000 + ((NSString *)idArray.lastObject).integerValue)] substringFromIndex:1]];
+                [self.indicatorView startAnimating];
                 [MobAPI sendRequestWithInterface:@"/v1/cook/menu/query" param:@{@"key" : APPKey, @"id" : menuId} onResult:^(MOBAResponse *response) {
-                    [self.indicatorView stopAnimating];
                     if (!response.error) {
                         MobFoodClassItemModel *model = [self convertRecommendModelWithDictionary:response.responder[@"result"] ];
                         if (model) {
@@ -59,9 +64,9 @@
                         }
                         finishRequestCount++;
                         if (finishRequestCount == (collectArray.count - 2)) {
-                            //                        [[MobFoodClassItemModel faf_keyValuesArrayWithObjectArray:self.recommendDataArray] writeToFile:self.recommendFilePath atomically:YES];
                             [self.dataArray removeObject:@""];
                             [self.tableView reloadData];
+                            [self.indicatorView stopAnimating];
                         }
                     }
                 }];
@@ -121,6 +126,14 @@
     vc.title = model.name;
     vc.cid = model.menuId;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (NSMutableArray *)dataArray
+{
+    if (_dataArray == nil) {
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
 }
 
 @end

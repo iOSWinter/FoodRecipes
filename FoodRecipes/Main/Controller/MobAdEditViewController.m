@@ -9,7 +9,7 @@
 #import "MobAdEditViewController.h"
 #import "MobAdEditCell.h"
 
-@interface MobAdEditViewController () <UIAlertViewDelegate>
+@interface MobAdEditViewController ()
 
 @property (nonatomic, strong) UIView *addView;
 @property (strong, nonatomic) UITextView *imgUrl;
@@ -40,7 +40,7 @@
     [self setupViewStyle];
     [self addDone];
     [self fetchAdvertisementData];
-//    self.imgUrl.text = @"http://www.vw.com.cn/content/dam/vw-ngw/vw/homepage/Homepage_NewGolf_2432x1368px.jpg/_jcr_content/renditions/original./Homepage_NewGolf_2432x1368px.jpg";
+//    self.imgUrl.text = @"http://pic.9ht.com/up/2015-5/2015531102710.jpg";
 //    self.redirectUrl.text = @"http://www.vw.com.cn/cn.html";
 //    self.titleName.text = @"大众汽车";
 }
@@ -214,9 +214,10 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"删除" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        
         [self.indicatorView startAnimating];
         [MobAPI sendRequestWithInterface:@"/ucache/del" param:@{@"key" : APPKey, @"table" : @"advertisement", @"k" : [self codeStringWithOriginalString:self.dataArray[indexPath.row][@"k"] encode:YES],} onResult:^(MOBAResponse *response) {
             [self.indicatorView stopAnimating];
@@ -225,35 +226,32 @@
             } else {
                 [FAFProgressHUD show:@"删除成功" icon:nil view:self.view color:nil];
                 [self.dataArray removeObjectAtIndex:indexPath.row];
-                [self.tableView reloadData];
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         }];
-    }
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [[[UIAlertView alloc] initWithTitle:@"提醒\n将此广告放到最前位置" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"取消", @"确定", nil] show];
-    self.indexPath = indexPath;
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    [self addDone];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1) {
-        NSDictionary *dict = self.dataArray[self.indexPath.row];
+    }];
+    __weak MobAdEditViewController *weakSelf = self;
+    UITableViewRowAction *topRowAction =[UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"编辑\n置顶" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        weakSelf.indexPath = indexPath;
+        NSDictionary *dict = self.dataArray[indexPath.row];
         self.imgUrl.text = dict[@"k"];
         NSArray *array = [dict[@"v"] componentsSeparatedByString:@","];
         self.redirectUrl.text = array.firstObject;
         self.titleName.text = array.lastObject;
         [self addNewItem];
         [self updateConfirmButtonTitle:@"位置更新"];
-    }
+    }];
+    return @[deleteAction,topRowAction];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self addDone];
 }
 
 @end

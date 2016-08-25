@@ -14,8 +14,13 @@
 @interface MobSearchViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) NSMutableArray *dataArray;
+@property (nonatomic, strong) NSMutableArray *recordDataArray;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) UITextField *search;
+@property (nonatomic, strong) NSString *recordFilePath;
+@property (nonatomic, assign) BOOL searchResult;
+@property (nonatomic, strong) NSString *lastString;
+@property (nonatomic, strong) NSMutableArray *lastDataArray;
 
 @end
 
@@ -24,14 +29,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"MobFoodListCell" bundle:nil] forCellReuseIdentifier:@"searchListCell"];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.rowHeight = 97;
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject stringByAppendingPathComponent:@"searchRecord"];
+    [[NSFileManager defaultManager] createDirectoryAtPath:docDir withIntermediateDirectories:YES attributes:nil error:nil];
+    self.recordFilePath = [docDir stringByAppendingPathComponent:@"record.dat"];
+    self.recordDataArray = [NSMutableArray arrayWithContentsOfFile:self.recordFilePath];
+    self.recordDataArray = self.recordDataArray ?: [NSMutableArray array];
+    [self showRecord];
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 50)];
     headerView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.05];
     UITextField *search = [[UITextField alloc] initWithFrame:CGRectMake(15, 10, headerView.frame.size.width - 80, 30)];
     search.borderStyle = UITextBorderStyleRoundedRect;
+    search.clearButtonMode = UITextFieldViewModeWhileEditing;
     search.placeholder = @"请输入查询内容";
     search.text = self.search.text;
     search.font = [UIFont boldSystemFontOfSize:15];
@@ -69,7 +78,7 @@
     }
     [MobAPI sendRequestWithInterface:@"/v1/cook/menu/search" param:@{@"key" : APPKey, @"name" : self.search.text ?: self.search.placeholder, @"page" : @(self.dataArray.count / 20 + 1)} onResult:^(MOBAResponse *response) {
         if (self.tableView.mj_footer == nil) {
-            self.tableView.mj_footer = [MJRefreshBackGifFooter footerWithRefreshingTarget:self refreshingAction:@selector(searchFoodRecipes)];
+            self.tableView.mj_footer = [MJRefreshAutoGifFooter footerWithRefreshingTarget:self refreshingAction:@selector(searchFoodRecipes)];
         }
         [self.tableView.mj_footer endRefreshing];
         if (self.indicatorView) {
@@ -77,7 +86,20 @@
         }
         if (response.error) {
             [FAFProgressHUD showError:@"查询不到数据" icon:nil color:nil];
+            [self.tableView reloadData];
+            [self.tableView.mj_footer removeFromSuperview];
+            self.tableView.mj_footer = nil;
         } else {
+            self.searchResult = YES;
+            [self.tableView registerNib:[UINib nibWithNibName:@"MobFoodListCell" bundle:nil] forCellReuseIdentifier:@"searchListCell"];
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+            self.tableView.rowHeight = 97;
+            if ([self.recordDataArray containsObject:self.search.text]) {
+                [self.recordDataArray removeObject:self.search.text];
+            }
+            [self.recordDataArray insertObject:self.search.text atIndex:0];
+            [self.recordDataArray.count > 10 ? [self.recordDataArray subarrayWithRange:NSMakeRange(0, 9)] : self.recordDataArray writeToFile:self.recordFilePath atomically:YES];
+            
             [MobFoodClassModel faf_setupObjectClassInArray:^NSDictionary *{
                 return @{@"list" : @"MobFoodClassItemModel"};
             }];
@@ -90,39 +112,65 @@
             MobFoodClassModel *model = [MobFoodClassModel faf_objectWithKeyValues:response.responder];
             [self.dataArray addObjectsFromArray:model.list];
             [self.tableView reloadData];
+            _lastString = self.search.text;
+            _lastDataArray = [NSMutableArray arrayWithArray:self.dataArray];
         }
     }];
 }
 
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.dataArray.count;
+    return self.searchResult ? self.dataArray.count : self.recordDataArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    MobFoodListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchListCell"];
-    
-    [cell setupData:self.dataArray[indexPath.row]];
-    
-    return cell;
+    if (self.searchResult) {
+        MobFoodListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"searchListCell"];
+        
+        [cell setupData:self.dataArray[indexPath.row]];
+        
+        return cell;
+    } else {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"recordCell"];
+        
+        cell.textLabel.text = self.recordDataArray[indexPath.row];
+        cell.textLabel.font = [UIFont systemFontOfSize:16];
+        
+        return cell;
+    }
+    return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStyleDone target:nil action:nil];    
-    MobFoodDetailViewController *vc = [[MobFoodDetailViewController alloc] init];
-    MobFoodClassItemModel *model = self.dataArray[indexPath.row];
-    vc.title = model.name;
-    vc.model = model;
-    [self.navigationController pushViewController:vc animated:YES];
+    if (self.searchResult) {
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStyleDone target:nil action:nil];
+        MobFoodDetailViewController *vc = [[MobFoodDetailViewController alloc] init];
+        MobFoodClassItemModel *model = self.dataArray[indexPath.row];
+        vc.title = model.name;
+        vc.model = model;
+        [self.navigationController pushViewController:vc animated:YES];
+    } else {
+        NSString *searchKey = self.recordDataArray[indexPath.row];
+        self.search.text = searchKey;
+        [self searchFoodRecipes];
+    }
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    self.dataArray = nil;
-    [self.tableView reloadData];
+    if (textField.text.length == 1 && [string isEqualToString:@""]) {
+        [self showRecord];
+    }
+    [self.dataArray removeAllObjects];
     
+    return YES;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    [self showRecord];
     return YES;
 }
 
@@ -132,6 +180,23 @@
     return YES;
 }
 
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if ([textField.text isEqualToString:_lastString]) {
+        self.dataArray = _lastDataArray;
+    }
+}
+
+
+- (void)showRecord
+{
+    [self.dataArray removeAllObjects];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"recordCell"];
+    self.tableView.rowHeight = 44;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.searchResult = NO;
+    [self.tableView reloadData];
+}
 
 - (NSMutableArray *)dataArray
 {
