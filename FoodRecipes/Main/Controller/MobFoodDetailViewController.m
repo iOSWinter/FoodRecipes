@@ -79,7 +79,7 @@
     if (((AppDelegate *)[UIApplication sharedApplication].delegate).uid == nil) {
         return;
     }
-    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid encode:YES]} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid]} onResult:^(MOBAResponse *response) {
         if (!response.error) {
             NSArray *dataArray = response.responder[@"result"][@"data"];
             self.v = dataArray.firstObject[@"v"];
@@ -94,19 +94,9 @@
 }
 
 // Base64编码和解码
-- (NSString *)codeStringWithOriginalString:(NSString *)originalString encode:(BOOL)encode
+- (NSString *)codeStringWithOriginalString:(NSString *)originalString
 {
-    if (encode) {
-        return [[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""];
-    } else {
-        NSString *decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        if (decodeString.length == 0) {
-            originalString = [originalString stringByAppendingString:@"="];
-            decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        }
-        return decodeString;
-    }
-    return nil;
+    return [[[[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""] stringByReplacingOccurrencesOfString:@"+" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
 }
 
 - (void)shareItemClicked
@@ -177,7 +167,7 @@
         self.v = [newKey stringByAppendingString:self.v];
     }
     [self.indicatorView startAnimating];
-    [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid encode:YES], @"v" : [self codeStringWithOriginalString:self.v encode:YES]} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid], @"v" : [self codeStringWithOriginalString:self.v]} onResult:^(MOBAResponse *response) {
         [self.indicatorView stopAnimating];
         if (!response.error) {
             self.collected = !self.collected;

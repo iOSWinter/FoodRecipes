@@ -57,6 +57,7 @@
     
     self.scrollView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshRecommendData)];
     
+    
     //    [MobAPI sendRequest:[MOBAWeatherRequest citiesRequest] onResult:^(MOBAResponse *response) {
     //        [MobProvinceModel faf_setupObjectClassInArray:^NSDictionary *{
     //            return @{
@@ -89,19 +90,7 @@
     //    [MobAPI sendRequest:[MOBAHistoryRequest historyRequestWithDay:@"0814"] onResult:^(MOBAResponse *response) {
     //        NSArray *historyArray = [MobHistoryDayModel faf_objectArrayWithKeyValuesArray:response.responder[@"result"]];
     //        [historyArray makeObjectsPerformSelector:@selector(print)];
-    //    }];
-    
-    //    [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:@"WB3455461862" encode:YES], @"v" : @""} onResult:^(MOBAResponse *response) {
-    //        NSLog(@"%@", response.error);
-    //    }];
-    //    [MobAPI sendRequestWithInterface:@"/ucache/get" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:@"WB3455461862" encode:YES]} onResult:^(MOBAResponse *response) {
-    //        NSString *a = response.responder[@"result"][@"v"];
-    //        NSArray *p = [a componentsSeparatedByString:@","];
-    //        NSLog(@"%@", p);
-    //    }];
-    //    [MobAPI sendRequestWithInterface:@"/ucache/del" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:@"WB3455461862" encode:YES]} onResult:^(MOBAResponse *response) {
-    //
-    //    }];
+    //    }];    
 }
 
 - (void)setupAdvertisementView

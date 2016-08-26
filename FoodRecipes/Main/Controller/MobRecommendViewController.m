@@ -93,7 +93,7 @@
     UITableViewRowAction *delete = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         [weakSelf.indicatorView startAnimating];
         MobFoodClassItemModel *model = weakSelf.dataArray[indexPath.row];
-        [MobAPI sendRequestWithInterface:@"/ucache/del" param:@{@"key" : APPKey, @"table" : @"recommend", @"k" : [weakSelf codeStringWithOriginalString:model.menuId encode:YES],} onResult:^(MOBAResponse *response) {
+        [MobAPI sendRequestWithInterface:@"/ucache/del" param:@{@"key" : APPKey, @"table" : @"recommend", @"k" : [weakSelf codeStringWithOriginalString:model.menuId],} onResult:^(MOBAResponse *response) {
             [weakSelf.indicatorView stopAnimating];
             [FAFProgressHUD show:response.error ? @"删除失败" : @"删除成功" icon:nil view:weakSelf.view color:nil];
             if (!response.error) {
@@ -105,7 +105,7 @@
     UITableViewRowAction *upper = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"置顶" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         [weakSelf.indicatorView startAnimating];
         MobFoodClassItemModel *model = weakSelf.dataArray[indexPath.row];
-        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"recommend", @"k" : [weakSelf codeStringWithOriginalString:model.menuId encode:YES], @"v" : [weakSelf codeStringWithOriginalString:@"YES" encode:YES]} onResult:^(MOBAResponse *response) {
+        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"recommend", @"k" : [weakSelf codeStringWithOriginalString:model.menuId], @"v" : [weakSelf codeStringWithOriginalString:@"YES"]} onResult:^(MOBAResponse *response) {
             [weakSelf.indicatorView stopAnimating];
             [FAFProgressHUD show:response.error ? @"操作失败" : @"置顶成功" icon:nil view:weakSelf.view color:nil];
             if (!response.error) {
@@ -124,19 +124,9 @@
 }
 
 // Base64编码和解码
-- (NSString *)codeStringWithOriginalString:(NSString *)originalString encode:(BOOL)encode
+- (NSString *)codeStringWithOriginalString:(NSString *)originalString
 {
-    if (encode) {
-        return [[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""];
-    } else {
-        NSString *decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        if (decodeString.length == 0) {
-            originalString = [originalString stringByAppendingString:@"="];
-            decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        }
-        return decodeString;
-    }
-    return nil;
+    return [[[[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""] stringByReplacingOccurrencesOfString:@"+" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
 }
 
 - (NSMutableArray *)dataArray

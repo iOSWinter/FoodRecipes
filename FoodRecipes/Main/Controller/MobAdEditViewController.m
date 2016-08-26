@@ -153,7 +153,7 @@
 {
     [self.indicatorView startAnimating];
     if (self.imgUrl.text.length != 0 && self.redirectUrl.text.length != 0 && self.titleName.text.length != 0) {
-        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"advertisement", @"k" : [self codeStringWithOriginalString:self.imgUrl.text encode:YES], @"v" : [self codeStringWithOriginalString:[self.redirectUrl.text stringByAppendingFormat:@",%@", self.titleName.text] encode:YES]} onResult:^(MOBAResponse *response) {
+        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"advertisement", @"k" : [self codeStringWithOriginalString:self.imgUrl.text], @"v" : [self codeStringWithOriginalString:[self.redirectUrl.text stringByAppendingFormat:@",%@", self.titleName.text]]} onResult:^(MOBAResponse *response) {
             [self.indicatorView stopAnimating];
             NSString *keyWord = [self.addButton.titleLabel.text substringFromIndex:2];
             if (response.error) {
@@ -179,19 +179,9 @@
 }
 
 // Base64编码和解码
-- (NSString *)codeStringWithOriginalString:(NSString *)originalString encode:(BOOL)encode
+- (NSString *)codeStringWithOriginalString:(NSString *)originalString
 {
-    if (encode) {
-        return [[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""];
-    } else {
-        NSString *decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        if (decodeString.length == 0) {
-            originalString = [originalString stringByAppendingString:@"="];
-            decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        }
-        return decodeString;
-    }
-    return nil;
+    return [[[[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""] stringByReplacingOccurrencesOfString:@"+" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
@@ -219,7 +209,7 @@
     UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"删除" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         
         [self.indicatorView startAnimating];
-        [MobAPI sendRequestWithInterface:@"/ucache/del" param:@{@"key" : APPKey, @"table" : @"advertisement", @"k" : [self codeStringWithOriginalString:self.dataArray[indexPath.row][@"k"] encode:YES],} onResult:^(MOBAResponse *response) {
+        [MobAPI sendRequestWithInterface:@"/ucache/del" param:@{@"key" : APPKey, @"table" : @"advertisement", @"k" : [self codeStringWithOriginalString:self.dataArray[indexPath.row][@"k"]],} onResult:^(MOBAResponse *response) {
             [self.indicatorView stopAnimating];
             if (response.error) {
                 [FAFProgressHUD show:@"删除失败,请稍后重试" icon:nil view:self.view color:nil];

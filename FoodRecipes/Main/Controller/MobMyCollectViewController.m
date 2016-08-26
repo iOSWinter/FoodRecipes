@@ -38,7 +38,7 @@
     self.indicatorView.color = [UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1];
     [self.view addSubview:self.indicatorView];
     [self.indicatorView startAnimating];
-    [MobAPI sendRequestWithInterface:@"/ucache/get" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid encode:YES]} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/get" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid]} onResult:^(MOBAResponse *response) {
         [self.indicatorView stopAnimating];
         if (!response.error) {
             NSDictionary *dataDict = response.responder[@"result"];
@@ -88,19 +88,9 @@
 }
 
 // Base64编码和解码
-- (NSString *)codeStringWithOriginalString:(NSString *)originalString encode:(BOOL)encode
+- (NSString *)codeStringWithOriginalString:(NSString *)originalString
 {
-    if (encode) {
-        return [[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""];
-    } else {
-        NSString *decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        if (decodeString.length == 0) {
-            originalString = [originalString stringByAppendingString:@"="];
-            decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        }
-        return decodeString;
-    }
-    return nil;
+    return [[[[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""] stringByReplacingOccurrencesOfString:@"+" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
 }
 
 #pragma mark - Table view data source

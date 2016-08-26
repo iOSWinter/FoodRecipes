@@ -71,6 +71,11 @@ static WinSocialShareTool *_shareInstance = nil;
                     sdkUser.nickname = user.nickname;
                     sdkUser.icon = user.icon;
                     sdkUser.loginPlatformType = platformType;
+                    if (sdkType == SSDKPlatformTypeQQ) {
+                        sdkUser.icon = [sdkUser.icon stringByReplacingOccurrencesOfString:@"http://qzapp.qlogo.cn/qzapp" withString:@"http://q.qlogo.cn/qqapp"];
+                    } else if (sdkType == SSDKPlatformTypeSinaWeibo) {
+                        sdkUser.icon = [sdkUser.icon stringByReplacingOccurrencesOfString:@"50/" withString:@"180/"];
+                    }
                     if (resultBlock) {
                         resultBlock(sdkUser);
                     }
@@ -141,26 +146,16 @@ static WinSocialShareTool *_shareInstance = nil;
         }];
     } else {
         // 加入推荐列表
-        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"recommend", @"k" : [self codeStringWithOriginalString:self.cid encode:YES], @"v" : [self codeStringWithOriginalString:@"YES" encode:YES]} onResult:^(MOBAResponse *response) {
+        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"recommend", @"k" : [self codeStringWithOriginalString:self.cid], @"v" : [self codeStringWithOriginalString:@"YES"]} onResult:^(MOBAResponse *response) {
             [self handleShareResult:response.error ? SSDKResponseStateFail : SSDKResponseStateSuccess platformType:SSDKPlatformTypeUnknown];
         }];
     }
 }
 
 // Base64编码和解码
-- (NSString *)codeStringWithOriginalString:(NSString *)originalString encode:(BOOL)encode
+- (NSString *)codeStringWithOriginalString:(NSString *)originalString
 {
-    if (encode) {
-        return [[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""];
-    } else {
-        NSString *decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        if (decodeString.length == 0) {
-            originalString = [originalString stringByAppendingString:@"="];
-            decodeString = [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:originalString options:0] encoding:NSUTF8StringEncoding];
-        }
-        return decodeString;
-    }
-    return nil;
+    return [[[[[originalString dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0] stringByReplacingOccurrencesOfString:@"=" withString:@""] stringByReplacingOccurrencesOfString:@"+" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
 }
 
 // 处理分享结果

@@ -53,7 +53,7 @@
 
 - (void)setupImgView
 {
-    UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
     img.layer.cornerRadius = img.frame.size.width * 0.5;
     img.layer.masksToBounds = YES;
     img.center = CGPointMake(Width * 3 / 4 * 0.5, 30);
@@ -239,6 +239,7 @@
     FAFProgressHUD *hud = [FAFProgressHUD showMessage:@"" toView:self.background];
     [WinSocialShareTool win_loginWithPlatformType:button.tag == 1 ? WinLoginPlatformTypeQQ : WinLoginPlatformTypeSinaWeibo resultBlock:^(WinSSDKUser *user) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            [hud removeFromSuperview];
             if (user) {
                 [self.loginTips removeFromSuperview];
                 [self.img sd_setImageWithURL:[NSURL URLWithString:user.icon]];
@@ -247,7 +248,6 @@
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                 [defaults setObject:@{@"nickname" : user.nickname ?: @"", @"icon" : user.icon ?: @"", @"uid" : user.uid} forKey:@"user"];
                 [defaults synchronize];
-                [hud removeFromSuperview];
                 self.logoutButton.tag = 1;
                 [self setupLogoutButtonSatuas];
                 [self setupManageAdButtonStatus];

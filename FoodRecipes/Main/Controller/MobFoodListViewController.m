@@ -47,12 +47,18 @@
     
     self.page = page ? page.integerValue : 1;
     self.totalPage = 10000;
-    [self loadMoreData];
+    [self loadMoreData:[[MJRefreshFooter alloc] init]];
 }
 
-- (void)loadMoreData
+- (void)loadMoreData:(id)sender
 {
-    [self fetchDataWithLoadMore:YES];
+    BOOL loadMore;
+    if ([sender isKindOfClass:[MJRefreshFooter class]]) {
+        loadMore = YES;
+    } else {
+        loadMore = NO;
+    }
+    [self fetchDataWithLoadMore:loadMore];
 }
 
 - (void)fetchDataWithLoadMore:(BOOL)loadMore
@@ -122,10 +128,10 @@
 - (void)updateIndicatorView
 {
     if (self.tableView.mj_header == nil) {
-        self.tableView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(fetchDataWithLoadMore:)];
+        self.tableView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData:)];
     }
     if (self.tableView.mj_footer == nil) {
-        self.tableView.mj_footer = [MJRefreshAutoGifFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        self.tableView.mj_footer = [MJRefreshAutoGifFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData:)];
     }
     [self.tableView.mj_header endRefreshing];
     [self.tableView.mj_footer endRefreshing];

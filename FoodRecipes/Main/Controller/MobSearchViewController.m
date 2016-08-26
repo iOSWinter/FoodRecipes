@@ -95,7 +95,11 @@
                 [self.recordDataArray removeObject:self.search.text];
             }
             [self.recordDataArray insertObject:self.search.text atIndex:0];
-            [self.recordDataArray.count > 10 ? [self.recordDataArray subarrayWithRange:NSMakeRange(0, 9)] : self.recordDataArray writeToFile:self.recordFilePath atomically:YES];
+            // 320*480 320*568 375*667 414*736
+            if (self.search.text.length > 0) {
+                NSInteger recordCount = (NSInteger)(([UIScreen mainScreen].bounds.size.height - 50 - 64) / 44);
+                [self.recordDataArray.count > recordCount ? [self.recordDataArray subarrayWithRange:NSMakeRange(0, recordCount - 1)] : self.recordDataArray writeToFile:self.recordFilePath atomically:YES];
+            }
             
             [MobFoodClassModel faf_setupObjectClassInArray:^NSDictionary *{
                 return @{@"list" : @"MobFoodClassItemModel"};

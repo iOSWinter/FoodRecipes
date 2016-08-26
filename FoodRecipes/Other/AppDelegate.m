@@ -41,9 +41,9 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     
-     UIBackgroundTaskIdentifier taskID = [application beginBackgroundTaskWithExpirationHandler:^{
-        if (taskID != UIBackgroundTaskInvalid)
-        {
+//     UIBackgroundTaskIdentifier taskID = [application beginBackgroundTaskWithExpirationHandler:^{
+//        if (taskID != UIBackgroundTaskInvalid)
+//        {
             [application cancelAllLocalNotifications];
             UILocalNotification *notification = [[UILocalNotification alloc] init];
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -65,9 +65,9 @@
             NSInteger subI = arc4random() % subArray.count;
             notification.alertBody = [preArray[preI] stringByAppendingString:subArray[subI]];
             [application scheduleLocalNotification:notification];
-            [application endBackgroundTask:taskID];
-        }
-    }];
+//            [application endBackgroundTask:taskID];
+//        }
+//    }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
