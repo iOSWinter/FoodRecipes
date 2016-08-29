@@ -79,12 +79,12 @@
     if (((AppDelegate *)[UIApplication sharedApplication].delegate).uid == nil) {
         return;
     }
-    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid]} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/get" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid]} onResult:^(MOBAResponse *response) {
         if (!response.error) {
-            NSArray *dataArray = response.responder[@"result"][@"data"];
-            self.v = dataArray.firstObject[@"v"];
+            NSDictionary *dataDict = response.responder[@"result"];
+            self.v = dataDict[@"v"];
             NSArray *collectArray = [self.v componentsSeparatedByString:@","];
-            NSString *key = [[self.model.menuId substringWithRange:NSMakeRange(8, 2)] stringByAppendingFormat:@"/%@", [[self.model.menuId substringFromIndex:10] stringByReplacingOccurrencesOfString:@"0" withString:@""]];
+            NSString *key = [[self.model.menuId substringWithRange:NSMakeRange(8, 2)] stringByAppendingFormat:@"/%@", [NSString stringWithFormat:@"%li", [self.model.menuId substringFromIndex:10].integerValue]];
             if ([collectArray containsObject:key]) {
                 [self.collectButton setImage:[UIImage imageNamed:@"collectDone"] forState:UIControlStateNormal];
                 self.collected = YES;
@@ -160,7 +160,7 @@
         [[[UIAlertView alloc] initWithTitle:@"登录提示" message:@"\n您还没有进行登录!\n马上去登录?" delegate:self cancelButtonTitle:nil otherButtonTitles:@"取消", @"确定", nil] show];
         return;
     }
-    NSString *newKey = [[self.model.menuId substringWithRange:NSMakeRange(8, 2)] stringByAppendingFormat:@"/%@,", [[self.model.menuId substringFromIndex:10] stringByReplacingOccurrencesOfString:@"0" withString:@""]];
+    NSString *newKey = [[self.model.menuId substringWithRange:NSMakeRange(8, 2)] stringByAppendingFormat:@"/%@,", [NSString stringWithFormat:@"%li",[self.model.menuId substringFromIndex:10].integerValue]];
     if (self.collected) {
         self.v = [self.v stringByReplacingOccurrencesOfString:newKey withString:@""];
     } else {

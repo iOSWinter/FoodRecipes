@@ -1,12 +1,14 @@
 //
 //  LeftViewController.h
-//  SideViewController
+//  FoodRecipes
 //
-//  Created by YouXianMing on 16/6/6.
-//  Copyright © 2016年 YouXianMing. All rights reserved.
+//  Created by WinterChen on 16/8/29.
+//  Copyright © 2016年 WinterChen. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+
+#define leftViewWidth Width * 0.75
 
 @protocol LeftViewControllerDelegate <NSObject>
 
@@ -20,5 +22,4 @@
 @property (nonatomic, weak) id<LeftViewControllerDelegate> delegate;
 
 - (void)updateCachesSize;
-
 @end

@@ -29,7 +29,6 @@
 		D53C6FE31D66F6D900F5B577 /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D53C6FCF1D66F6D900F5B577 /* UIView+MJExtension.m */; };
 		D55925A41D6D31390061FDF4 /* UIView+AnimationProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = D55925A01D6D31390061FDF4 /* UIView+AnimationProperty.m */; };
 		D55925A51D6D31390061FDF4 /* UIView+SetRect.m in Sources */ = {isa = PBXBuildFile; fileRef = D55925A21D6D31390061FDF4 /* UIView+SetRect.m */; };
-		D55925AA1D6D31D00061FDF4 /* LeftViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D55925A71D6D31D00061FDF4 /* LeftViewController.m */; };
 		D55925AB1D6D31D00061FDF4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D55925A91D6D31D00061FDF4 /* MainViewController.m */; };
 		D55B55FA1D6A8A4500706A35 /* MobSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D55B55F91D6A8A4500706A35 /* MobSearchViewController.m */; };
 		D55B55FD1D6AA50500706A35 /* MobCarefulSelectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D55B55FC1D6AA50500706A35 /* MobCarefulSelectionModel.m */; };
@@ -42,6 +41,8 @@
 		D55CE64A1D600852002347D1 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D55CE6491D600852002347D1 /* JavaScriptCore.framework */; };
 		D55DCE9D1D6ECDFA00278CED /* MobRecommendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D55DCE9C1D6ECDFA00278CED /* MobRecommendViewController.m */; };
 		D563180A1D66D3F5002B56D2 /* MobRecommendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D56318091D66D3F5002B56D2 /* MobRecommendModel.m */; };
+		D56462B11D73B552002EA992 /* LeftViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D56462AF1D73B552002EA992 /* LeftViewController.m */; };
+		D56462B21D73B552002EA992 /* LeftViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D56462B01D73B552002EA992 /* LeftViewController.xib */; };
 		D5770AA01D62908D00B4460D /* MobMenuCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D5770A9E1D62908D00B4460D /* MobMenuCollectionCell.m */; };
 		D5770AA11D62908D00B4460D /* MobMenuCollectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D5770A9F1D62908D00B4460D /* MobMenuCollectionCell.xib */; };
 		D5770AD21D62B02E00B4460D /* CMSDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D5770AA51D62B02E00B4460D /* CMSDImageCache.m */; };
@@ -191,8 +192,6 @@
 		D55925A01D6D31390061FDF4 /* UIView+AnimationProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AnimationProperty.m"; sourceTree = "<group>"; };
 		D55925A11D6D31390061FDF4 /* UIView+SetRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SetRect.h"; sourceTree = "<group>"; };
 		D55925A21D6D31390061FDF4 /* UIView+SetRect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SetRect.m"; sourceTree = "<group>"; };
-		D55925A61D6D31D00061FDF4 /* LeftViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftViewController.h; sourceTree = "<group>"; };
-		D55925A71D6D31D00061FDF4 /* LeftViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftViewController.m; sourceTree = "<group>"; };
 		D55925A81D6D31D00061FDF4 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		D55925A91D6D31D00061FDF4 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		D55B55F81D6A8A4500706A35 /* MobSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobSearchViewController.h; sourceTree = "<group>"; };
@@ -213,6 +212,9 @@
 		D55DCE9C1D6ECDFA00278CED /* MobRecommendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobRecommendViewController.m; sourceTree = "<group>"; };
 		D56318081D66D3F5002B56D2 /* MobRecommendModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobRecommendModel.h; sourceTree = "<group>"; };
 		D56318091D66D3F5002B56D2 /* MobRecommendModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobRecommendModel.m; sourceTree = "<group>"; };
+		D56462AE1D73B552002EA992 /* LeftViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftViewController.h; sourceTree = "<group>"; };
+		D56462AF1D73B552002EA992 /* LeftViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftViewController.m; sourceTree = "<group>"; };
+		D56462B01D73B552002EA992 /* LeftViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LeftViewController.xib; sourceTree = "<group>"; };
 		D5770A9D1D62908D00B4460D /* MobMenuCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobMenuCollectionCell.h; sourceTree = "<group>"; };
 		D5770A9E1D62908D00B4460D /* MobMenuCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobMenuCollectionCell.m; sourceTree = "<group>"; };
 		D5770A9F1D62908D00B4460D /* MobMenuCollectionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MobMenuCollectionCell.xib; sourceTree = "<group>"; };
@@ -534,6 +536,7 @@
 		D559259D1D6D30F60061FDF4 /* LeftMenu */ = {
 			isa = PBXGroup;
 			children = (
+				D56462A91D73B4AC002EA992 /* View */,
 				D559259E1D6D31390061FDF4 /* Category */,
 				D55925A31D6D31390061FDF4 /* Controller */,
 			);
@@ -554,10 +557,11 @@
 		D55925A31D6D31390061FDF4 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				D55925A61D6D31D00061FDF4 /* LeftViewController.h */,
-				D55925A71D6D31D00061FDF4 /* LeftViewController.m */,
 				D55925A81D6D31D00061FDF4 /* MainViewController.h */,
 				D55925A91D6D31D00061FDF4 /* MainViewController.m */,
+				D56462AE1D73B552002EA992 /* LeftViewController.h */,
+				D56462AF1D73B552002EA992 /* LeftViewController.m */,
+				D56462B01D73B552002EA992 /* LeftViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -577,6 +581,13 @@
 				D55CE6211D6006A5002347D1 /* FoodRecipes.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D56462A91D73B4AC002EA992 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		D5770AA21D62B02E00B4460D /* MXScrollView */ = {
@@ -1032,6 +1043,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5CFC1191D61404700AF9464 /* Main.storyboard in Resources */,
+				D56462B21D73B552002EA992 /* LeftViewController.xib in Resources */,
 				D5785C351D65AEDF0070232C /* WeiboSDK.bundle in Resources */,
 				D5785BE41D65502A0070232C /* recommendData.plist in Resources */,
 				D5CFC1211D61420100AF9464 /* InfoPlist.strings in Resources */,
@@ -1105,7 +1117,6 @@
 				D5CFC1501D614A7800AF9464 /* SDWebImageCompat.m in Sources */,
 				D53C6FDD1D66F6D900F5B577 /* MJRefreshStateHeader.m in Sources */,
 				D53C6FD91D66F6D900F5B577 /* MJRefreshBackNormalFooter.m in Sources */,
-				D55925AA1D6D31D00061FDF4 /* LeftViewController.m in Sources */,
 				D5770AD71D62B02E00B4460D /* CMSDWebImageManager.m in Sources */,
 				D5CFC1071D61404700AF9464 /* MobFoodDetailViewController.m in Sources */,
 				D5770AD21D62B02E00B4460D /* CMSDImageCache.m in Sources */,
@@ -1128,6 +1139,7 @@
 				D5CFC10A1D61404700AF9464 /* MobFoodSecondViewController.m in Sources */,
 				D53C6FE11D66F6D900F5B577 /* UIScrollView+MJExtension.m in Sources */,
 				D5770AA01D62908D00B4460D /* MobMenuCollectionCell.m in Sources */,
+				D56462B11D73B552002EA992 /* LeftViewController.m in Sources */,
 				D5CFC1121D61404700AF9464 /* MobFoodListCell.m in Sources */,
 				D5CFC1031D61404700AF9464 /* NSObject+MJCoding.m in Sources */,
 				D5770AD91D62B02E00B4460D /* MKAnnotationView+CMWebCache.m in Sources */,

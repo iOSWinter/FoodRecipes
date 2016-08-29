@@ -50,6 +50,11 @@
     [WinSocialShareTool win_shareTitle:@"精选美食" images:shareImgs content:self.model.title > 0 ? self.model.title : @"美食菜谱" urlString:self.link recommendCid:self.model.currentId];
 }
 
+- (void)dealloc
+{
+    [[NSFileManager defaultManager] removeItemAtPath:NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject error:nil];
+}
+
 #pragma mark WKWebView的代理
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {

@@ -42,7 +42,7 @@
         [self.indicatorView stopAnimating];
         if (!response.error) {
             NSDictionary *dataDict = response.responder[@"result"];
-            NSString *vString = dataDict[@"v"];
+            __block NSString *vString = dataDict[@"v"];
             NSArray *collectArray = [vString componentsSeparatedByString:@","];
             if (collectArray.count == 2) {
                 [FAFProgressHUD show:@"您还没有收藏任何美食" icon:nil view:self.view color:nil];
@@ -56,17 +56,27 @@
                 NSArray *idArray = [collectArray[i] componentsSeparatedByString:@"/"];
                 NSString *menuId = [[@"00100010" stringByAppendingString:idArray.firstObject] stringByAppendingString:[[NSString stringWithFormat:@"%li", (long)(10000000000 + ((NSString *)idArray.lastObject).integerValue)] substringFromIndex:1]];
                 [self.indicatorView startAnimating];
+                __block BOOL hasError = NO;
                 [MobAPI sendRequestWithInterface:@"/v1/cook/menu/query" param:@{@"key" : APPKey, @"id" : menuId} onResult:^(MOBAResponse *response) {
                     if (!response.error) {
                         MobFoodClassItemModel *model = [self convertRecommendModelWithDictionary:response.responder[@"result"] ];
                         if (model) {
                             [self.dataArray replaceObjectAtIndex:i withObject:model];
                         }
-                        finishRequestCount++;
-                        if (finishRequestCount == (collectArray.count - 2)) {
-                            [self.dataArray removeObject:@""];
-                            [self.tableView reloadData];
-                            [self.indicatorView stopAnimating];
+                    } else {
+                        vString = [vString stringByReplacingOccurrencesOfString:[collectArray[i] stringByAppendingString:@","] withString:@""];
+                        hasError = YES;
+                    }
+                    finishRequestCount++;
+                    if (finishRequestCount == (collectArray.count - 2)) {
+                        [self.dataArray removeObject:@""];
+                        [self.tableView reloadData];
+                        [self.indicatorView stopAnimating];
+                        if (self.dataArray.count == 0) {
+                            [FAFProgressHUD show:@"您还没有收藏任何美食" icon:nil view:self.view color:nil];
+                        }
+                        if (hasError) {
+                            [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"prefer", @"k" : [self codeStringWithOriginalString:((AppDelegate *)[UIApplication sharedApplication].delegate).uid], @"v" : [self codeStringWithOriginalString:vString]} onResult:nil];
                         }
                     }
                 }];

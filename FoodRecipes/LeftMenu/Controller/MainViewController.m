@@ -100,25 +100,19 @@
     [self.view addSubview:_scrollView];
     MXImageScrollView *adsView = [[MXImageScrollView alloc] initWithFrame:CGRectMake(0, 0, self.size.width, self.size.width * 0.5)];
     adsView.showAnimotion = YES;
+    adsView.scrollIntervalTime = 4;
     adsView.animotionType = kMXTransitionReveal;
     adsView.animotionDirection = kMXTransitionDirectionFromRight;
-    //    adsView.images = @[[UIImage imageNamed:@"ad1.jpg"], [UIImage imageNamed:@"ad2.jpg"], [UIImage imageNamed:@"ad3.jpg"], [UIImage imageNamed:@"ad4.jpg"]];
     adsView.pageControlPosition = kMXPageControlPositionBottom;
     [self.scrollView addSubview:adsView];
     _adsView = adsView;
     [self fetchAdvertisementData];
-    //    adsView.tapImageHandle = ^(NSInteger index){
-    //        NSArray *linkArray = @[@{@"帝豪汽车" : @"http://promotion.geely.com"}, @{@"成都" : @"http://www.cdzw.gov.cn"}, @{@"里约奥运" : @"http://2016.cctv.com"}, @{@"奥迪汽车" : @"http://www.audi.cn"}];
-    //        MobAdViewController *vc = [[MobAdViewController alloc] init];
-    //        vc.link = ((NSDictionary *)linkArray[index]).allValues.firstObject;
-    //        vc.title = ((NSDictionary *)linkArray[index]).allKeys.firstObject;
-    //        [self.navigationController pushViewController:vc animated:YES];
-    //    };
 }
 
 - (void)setupCollectionView
 {
-    UIView *collectionViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, self.size.width * 0.5 + 10, self.size.width, 120)];
+    _cellHeight = 90;
+    UIView *collectionViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, self.size.width * 0.5 + 10, self.size.width, _cellHeight + 30)];
     collectionViewContainer.layer.borderWidth = 1;
     collectionViewContainer.layer.borderColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.05].CGColor;
     collectionViewContainer.backgroundColor = [UIColor whiteColor];
@@ -132,13 +126,12 @@
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.sectionInset = UIEdgeInsetsZero;
     flowLayout.minimumInteritemSpacing = 20;
-    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _cellHeight = 90;
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     flowLayout.itemSize = CGSizeMake(_cellHeight, _cellHeight);
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, checkView.frame.origin.y + checkView.frame.size.height, collectionViewContainer.frame.size.width, _cellHeight + 10) collectionViewLayout:flowLayout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, checkView.frame.origin.y + checkView.frame.size.height, collectionViewContainer.frame.size.width, _cellHeight + 5) collectionViewLayout:flowLayout];
     [_collectionView registerNib:[UINib nibWithNibName:@"MobMenuCollectionCell" bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:@"menuCell"];
     _collectionView.backgroundColor = [UIColor whiteColor];
-    _collectionView.showsHorizontalScrollIndicator = NO;
+    _collectionView.showsVerticalScrollIndicator = NO;
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     [collectionViewContainer addSubview:_collectionView];
@@ -159,26 +152,31 @@
 - (void)fetchAdvertisementData
 {
     __weak MainViewController *weakSelf = self;
-    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"advertisement", @"page" : @"1", @"size" : @"20"} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"advertisement", @"page" : @"1", @"size" : @"50"} onResult:^(MOBAResponse *response) {
         if (!response.error) {
             NSArray *adArray = response.responder[@"result"][@"data"];
             NSMutableArray *imgUrlArray = [NSMutableArray array];
             NSMutableArray *urlArray = [NSMutableArray array];
             NSMutableArray *titleArray = [NSMutableArray array];
             for (NSInteger i = 0; i < adArray.count; i++) {
-                [imgUrlArray addObject:adArray[i][@"k"]];
-                NSArray *array = [adArray[i][@"v"] componentsSeparatedByString:@","];
-                [urlArray addObject:array.firstObject];
-                [titleArray addObject:array.lastObject];
+                NSString *functionMark = [adArray[i][@"v"] componentsSeparatedByString:@","].lastObject;
+                if (functionMark.integerValue == 1) {
+                    [imgUrlArray addObject:adArray[i][@"k"]];
+                    NSArray *array = [adArray[i][@"v"] componentsSeparatedByString:@","];
+                    [urlArray addObject:array.firstObject];
+                    [titleArray addObject:array[1]];
+                }
             }
-            self.adsView.images = imgUrlArray;
-            self.adsView.tapImageHandle = ^(NSInteger index){
-                [weakSelf.navBar removeFromSuperview];
-                MobAdViewController *vc = [[MobAdViewController alloc] init];
-                vc.link = urlArray[index];
-                vc.title = titleArray[index];
-                [weakSelf.navController pushViewController:vc animated:YES];
-            };
+            if (imgUrlArray.count > 0) {
+                self.adsView.images = imgUrlArray;
+                self.adsView.tapImageHandle = ^(NSInteger index){
+                    [weakSelf.navBar removeFromSuperview];
+                    MobAdViewController *vc = [[MobAdViewController alloc] init];
+                    vc.link = urlArray[index];
+                    vc.title = titleArray[index];
+                    [weakSelf.navController pushViewController:vc animated:YES];
+                };
+            }
         }
     }];
 }
@@ -243,6 +241,9 @@
 {
     __block NSInteger finishRequestCount = 0;
     for (NSInteger i = 0; i < listArray.count; i++) {
+        if (i >= self.recommendDataArray.count) {
+            [self.recommendDataArray addObject:@""];
+        }
         MobRecommendModel *recommendModel = listArray[i];
         [MobAPI sendRequestWithInterface:@"/v1/cook/menu/query" param:@{@"key" : APPKey, @"id" : recommendModel.cid} onResult:^(MOBAResponse *response) {
             if (!response.error) {
@@ -333,7 +334,7 @@
 // 加载最新推荐数据
 - (void)fetchLeastRecommendListData
 {
-    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"recommend", @"page" : @"1", @"size" : @"5"} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"recommend", @"page" : @"1", @"size" : @"10"} onResult:^(MOBAResponse *response) {
         if (response.error == nil) {
             [MobRecommendModel faf_setupReplacedKeyFromPropertyName:^NSDictionary *{ return @{@"cid" : @"k"}; }];
             NSArray *recommendArray = [MobRecommendModel faf_objectArrayWithKeyValuesArray:response.responder[@"result"][@"data"]];
