@@ -19,7 +19,9 @@
 #import "MXScrollView.h"
 #import "MJRefresh.h"
 
-@interface MainViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource>
+#define adViewHWRate 0.55
+
+@interface MainViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource, CSBBannerViewDelegate>
 
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (nonatomic, strong) MXImageScrollView *adsView;
@@ -36,6 +38,10 @@
 @property (nonatomic, strong) NSMutableArray *checkedDataArray;
 @property (nonatomic, retain) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSString *recommendFilePath;
+@property (nonatomic, strong) NSString *advertiseCachesFilePath;
+@property (nonatomic, assign) BOOL didShow;
+@property (nonatomic, assign) BOOL shouldHide;
+@property (nonatomic, strong) CSBBannerView *banner;
 
 @end
 
@@ -51,6 +57,7 @@
     // 设置view和请求数据
     [self setupAdvertisementView];
     [self setupCollectionView];
+    [self setupBannerView];
     [self setupTableview];
     [self fetchCollectionViewData];
     [self fetchRecommendData];
@@ -98,12 +105,28 @@
     _size = [UIScreen mainScreen].bounds.size;
     _scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     [self.view addSubview:_scrollView];
-    MXImageScrollView *adsView = [[MXImageScrollView alloc] initWithFrame:CGRectMake(0, 0, self.size.width, self.size.width * 0.5)];
+    MXImageScrollView *adsView = [[MXImageScrollView alloc] initWithFrame:CGRectMake(0, 0, self.size.width, self.size.width * adViewHWRate)];
     adsView.showAnimotion = YES;
     adsView.scrollIntervalTime = 4;
     adsView.animotionType = kMXTransitionReveal;
     adsView.animotionDirection = kMXTransitionDirectionFromRight;
     adsView.pageControlPosition = kMXPageControlPositionBottom;
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject stringByAppendingPathComponent:@"advertisement"];
+    [[NSFileManager defaultManager] createDirectoryAtPath:docDir withIntermediateDirectories:YES attributes:nil error:nil];
+    _advertiseCachesFilePath = [docDir stringByAppendingPathComponent:@"caches.dat"];
+    NSArray *adArray = [NSArray arrayWithContentsOfFile:self.advertiseCachesFilePath];
+    if (adArray != nil) {
+        adsView.images = adArray.firstObject;
+        __weak MainViewController *weakSelf = self;
+        adsView.tapImageHandle = ^(NSInteger index) {
+            [weakSelf.navBar removeFromSuperview];
+            weakSelf.navBar = nil;
+            MobAdViewController *vc = [[MobAdViewController alloc] init];
+            vc.link = adArray[1][index];
+            vc.title = adArray.lastObject[index];
+            [weakSelf.navController pushViewController:vc animated:YES];
+        };
+    }
     [self.scrollView addSubview:adsView];
     _adsView = adsView;
     [self fetchAdvertisementData];
@@ -112,7 +135,7 @@
 - (void)setupCollectionView
 {
     _cellHeight = 90;
-    UIView *collectionViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, self.size.width * 0.5 + 10, self.size.width, _cellHeight + 30)];
+    UIView *collectionViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, self.size.width * adViewHWRate + 10, self.size.width, _cellHeight + 30)];
     collectionViewContainer.layer.borderWidth = 1;
     collectionViewContainer.layer.borderColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.05].CGColor;
     collectionViewContainer.backgroundColor = [UIColor whiteColor];
@@ -135,6 +158,39 @@
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     [collectionViewContainer addSubview:_collectionView];
+}
+
+- (void)setupBannerView
+{
+    CSBBannerView *banner = [[CSBBannerView alloc] initWithFrame:CGRectMake(0, self.collectionViewContainer.frame.origin.y + self.collectionViewContainer.frame.size.height + 2, Width, 50)];
+    banner.delegate = self;
+    [banner loadAd];
+    [self.scrollView addSubview:banner];
+    _banner = banner;
+}
+// banner的代理
+- (void)csbBannerViewShowFailure:(NSString *)errorMsg
+{
+    self.shouldHide = YES;
+    if (self.didShow == YES) {
+        self.didShow = NO;
+        self.tableview.y = self.tableview.y - 50;
+    }
+}
+- (void)csbBannerViewShowSuccess
+{
+    self.shouldHide = NO;
+    if (self.didShow == NO) {
+        self.didShow = YES;
+        self.tableview.y = self.tableview.y + 50;
+    }
+}
+- (void)csbBannerViewRemoved
+{
+    if (self.didShow && self.shouldHide == YES) {
+        self.didShow = NO;
+        self.tableview.y = self.tableview.y - 50;
+    }
 }
 
 - (void)setupTableview
@@ -167,10 +223,12 @@
                     [titleArray addObject:array[1]];
                 }
             }
+            [@[imgUrlArray, urlArray, titleArray] writeToFile:self.advertiseCachesFilePath atomically:YES];
             if (imgUrlArray.count > 0) {
                 self.adsView.images = imgUrlArray;
                 self.adsView.tapImageHandle = ^(NSInteger index){
                     [weakSelf.navBar removeFromSuperview];
+                    weakSelf.navBar = nil;
                     MobAdViewController *vc = [[MobAdViewController alloc] init];
                     vc.link = urlArray[index];
                     vc.title = titleArray[index];
@@ -348,6 +406,8 @@
 {
     [self fetchAdvertisementData];
     [self fetchLeastRecommendListData];
+    self.banner.delegate = self;
+    [self.banner loadAd];
 }
 
 // 刷新tableview
@@ -398,6 +458,7 @@ reStart:{
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.navBar removeFromSuperview];
+    self.navBar = nil;
     if (self.model) {
         if ([((NSDictionary *)self.collectionViewDataArray[indexPath.row]).allKeys.firstObject isEqualToString:@"jingxuan"]) {
             MobFoodListViewController *vc= [[MobFoodListViewController alloc] init];
@@ -451,6 +512,7 @@ reStart:{
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.navBar removeFromSuperview];
+    self.navBar = nil;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     MobFoodDetailViewController *vc = [[MobFoodDetailViewController alloc] init];
     MobFoodClassItemModel *model = indexPath.section == 0 ? self.recommendDataArray[indexPath.row] : self.checkedDataArray[indexPath.row];

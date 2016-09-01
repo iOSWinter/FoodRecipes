@@ -15,13 +15,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zGG-3s-hdq">
-                        <rect key="frame" x="15" y="5" width="140" height="69"/>
+                        <rect key="frame" x="15" y="5" width="120" height="69"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="140" id="083-1w-4m5"/>
+                            <constraint firstAttribute="width" constant="120" id="083-1w-4m5"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EK9-Vi-yYl">
-                        <rect key="frame" x="160" y="5" width="155" height="0.0"/>
+                        <rect key="frame" x="140" y="5" width="175" height="0.0"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="lessThanOrEqual" constant="70" id="A5w-ax-vI4"/>
                         </constraints>

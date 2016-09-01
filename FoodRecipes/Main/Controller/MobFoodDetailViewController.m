@@ -12,12 +12,14 @@
 #import "UIImageView+WebCache.h"
 #import "WinSocialShareTool.h"
 
-@interface MobFoodDetailViewController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate>
+@interface MobFoodDetailViewController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, CSBBannerViewDelegate>
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UILabel *foodTitle;
 @property (weak, nonatomic) IBOutlet UIImageView *img;
 @property (weak, nonatomic) IBOutlet UILabel *desc;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imgHeightConstriants;
+@property (weak, nonatomic) IBOutlet UIView *adView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *adViewHeightConstraints;
 @property (weak, nonatomic) IBOutlet UITableView *tableview;
 @property (weak, nonatomic) IBOutlet UILabel *summary;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewHeightConstraints;
@@ -27,6 +29,8 @@
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 
 @property (nonatomic, strong) NSMutableArray *cellHeightArray;
+@property (nonatomic, assign) BOOL didShow;
+@property (nonatomic, assign) BOOL shouldHide;
 
 @end
 
@@ -41,12 +45,13 @@
     self.indicatorView.center = CGPointMake([UIScreen mainScreen].bounds.size.width * 0.5, [UIScreen mainScreen].bounds.size.height * 0.5);
     self.indicatorView.color = [UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1];
     [self.view addSubview:self.indicatorView];
+    [self setupBannerView];
     [self fetchCollectData];
     
     self.imgHeightConstriants.constant = 0;
     self.foodTitle.text = self.model.recipe.title;
     NSString *recipes = [[[self.model.recipe.ingredients substringWithRange:NSMakeRange(1, self.model.recipe.ingredients.length - 2)] stringByReplacingOccurrencesOfString:@"\"" withString:@""] stringByReplacingOccurrencesOfString:@"材料：" withString:@""];
-    self.desc.text = recipes ?: @"略";
+    self.desc.text = recipes ?: @"详见制作步骤";
     
     self.tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableview.scrollEnabled = NO;
@@ -71,6 +76,38 @@
     [super viewDidAppear:animated];
     
     self.scrollView.contentSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, self.summary.frame.origin.y + self.summary.frame.size.height + 10);
+}
+
+- (void)setupBannerView
+{
+    CSBBannerView *banner = [[CSBBannerView alloc] initWithFrame:CGRectZero];
+    banner.delegate = self;
+    [banner loadAd];
+    [self.adView addSubview:banner];
+}
+// banner的代理
+- (void)csbBannerViewShowFailure:(NSString *)errorMsg
+{
+    self.shouldHide = YES;
+    if (self.didShow == YES) {
+        self.didShow = NO;
+        self.adViewHeightConstraints.constant = 0;
+    }
+}
+- (void)csbBannerViewShowSuccess
+{
+    self.shouldHide = NO;
+    if (self.didShow == NO) {
+        self.didShow = YES;
+        self.adViewHeightConstraints.constant = 50;
+    }
+}
+- (void)csbBannerViewRemoved
+{
+    if (self.didShow && self.shouldHide == YES) {
+        self.didShow = NO;
+        self.adViewHeightConstraints.constant = 0;
+    }
 }
 
 - (void)fetchCollectData

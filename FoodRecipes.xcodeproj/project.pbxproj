@@ -27,6 +27,10 @@
 		D53C6FE11D66F6D900F5B577 /* UIScrollView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D53C6FCB1D66F6D900F5B577 /* UIScrollView+MJExtension.m */; };
 		D53C6FE21D66F6D900F5B577 /* UIScrollView+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = D53C6FCD1D66F6D900F5B577 /* UIScrollView+MJRefresh.m */; };
 		D53C6FE31D66F6D900F5B577 /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D53C6FCF1D66F6D900F5B577 /* UIView+MJExtension.m */; };
+		D54FE54A1D757708004D2BEA /* ChanceAdRes.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D54FE5421D757708004D2BEA /* ChanceAdRes.bundle */; };
+		D54FE54B1D757708004D2BEA /* Chartboost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D54FE5431D757708004D2BEA /* Chartboost.framework */; };
+		D54FE54C1D757708004D2BEA /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D54FE5481D757708004D2BEA /* GoogleMobileAds.framework */; };
+		D54FE54D1D757708004D2BEA /* libChanceBundleAd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D54FE5491D757708004D2BEA /* libChanceBundleAd.a */; };
 		D55925A41D6D31390061FDF4 /* UIView+AnimationProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = D55925A01D6D31390061FDF4 /* UIView+AnimationProperty.m */; };
 		D55925A51D6D31390061FDF4 /* UIView+SetRect.m in Sources */ = {isa = PBXBuildFile; fileRef = D55925A21D6D31390061FDF4 /* UIView+SetRect.m */; };
 		D55925AB1D6D31D00061FDF4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D55925A91D6D31D00061FDF4 /* MainViewController.m */; };
@@ -188,6 +192,15 @@
 		D53C6FCD1D66F6D900F5B577 /* UIScrollView+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+MJRefresh.m"; sourceTree = "<group>"; };
 		D53C6FCE1D66F6D900F5B577 /* UIView+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJExtension.h"; sourceTree = "<group>"; };
 		D53C6FCF1D66F6D900F5B577 /* UIView+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJExtension.m"; sourceTree = "<group>"; };
+		D54FE5411D757708004D2BEA /* CangShuBundleAd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CangShuBundleAd.h; sourceTree = "<group>"; };
+		D54FE5421D757708004D2BEA /* ChanceAdRes.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ChanceAdRes.bundle; sourceTree = "<group>"; };
+		D54FE5431D757708004D2BEA /* Chartboost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Chartboost.framework; sourceTree = "<group>"; };
+		D54FE5441D757708004D2BEA /* CSBBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSBBannerView.h; sourceTree = "<group>"; };
+		D54FE5451D757708004D2BEA /* CSBInterstitial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSBInterstitial.h; sourceTree = "<group>"; };
+		D54FE5461D757708004D2BEA /* CSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSError.h; sourceTree = "<group>"; };
+		D54FE5471D757708004D2BEA /* CSVideoAD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVideoAD.h; sourceTree = "<group>"; };
+		D54FE5481D757708004D2BEA /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
+		D54FE5491D757708004D2BEA /* libChanceBundleAd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libChanceBundleAd.a; sourceTree = "<group>"; };
 		D559259F1D6D31390061FDF4 /* UIView+AnimationProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AnimationProperty.h"; sourceTree = "<group>"; };
 		D55925A01D6D31390061FDF4 /* UIView+AnimationProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AnimationProperty.m"; sourceTree = "<group>"; };
 		D55925A11D6D31390061FDF4 /* UIView+SetRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SetRect.h"; sourceTree = "<group>"; };
@@ -426,11 +439,14 @@
 				D5785C311D65AEDF0070232C /* ShareSDKUI.framework in Frameworks */,
 				D5785C2F1D65AEDF0070232C /* ShareSDKExtension.framework in Frameworks */,
 				D55CE64A1D600852002347D1 /* JavaScriptCore.framework in Frameworks */,
+				D54FE54B1D757708004D2BEA /* Chartboost.framework in Frameworks */,
 				D5785C2E1D65AEDF0070232C /* ShareSDK.framework in Frameworks */,
 				D5785C321D65AEDF0070232C /* TencentOpenAPI.framework in Frameworks */,
+				D54FE54D1D757708004D2BEA /* libChanceBundleAd.a in Frameworks */,
 				D5CFC0FA1D61404700AF9464 /* MobAPI.framework in Frameworks */,
 				D55CE6481D600845002347D1 /* libstdc++.tbd in Frameworks */,
 				D55CE6461D600838002347D1 /* libz.tbd in Frameworks */,
+				D54FE54C1D757708004D2BEA /* GoogleMobileAds.framework in Frameworks */,
 				D55CE6441D60082C002347D1 /* libicucore.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -531,6 +547,22 @@
 				D53C6FC31D66F6D900F5B577 /* MJRefreshStateHeader.m */,
 			);
 			path = Header;
+			sourceTree = "<group>";
+		};
+		D54FE5401D757708004D2BEA /* libChanceBundleAd */ = {
+			isa = PBXGroup;
+			children = (
+				D54FE5411D757708004D2BEA /* CangShuBundleAd.h */,
+				D54FE5421D757708004D2BEA /* ChanceAdRes.bundle */,
+				D54FE5431D757708004D2BEA /* Chartboost.framework */,
+				D54FE5441D757708004D2BEA /* CSBBannerView.h */,
+				D54FE5451D757708004D2BEA /* CSBInterstitial.h */,
+				D54FE5461D757708004D2BEA /* CSError.h */,
+				D54FE5471D757708004D2BEA /* CSVideoAD.h */,
+				D54FE5481D757708004D2BEA /* GoogleMobileAds.framework */,
+				D54FE5491D757708004D2BEA /* libChanceBundleAd.a */,
+			);
+			path = libChanceBundleAd;
 			sourceTree = "<group>";
 		};
 		D559259D1D6D30F60061FDF4 /* LeftMenu */ = {
@@ -767,6 +799,7 @@
 		D5CFC0B21D61404700AF9464 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				D54FE5401D757708004D2BEA /* libChanceBundleAd */,
 				D53C6FA11D66F6D900F5B577 /* MJRefresh */,
 				D5785C051D65AEDF0070232C /* WinSocialShareTool */,
 				D5770AA21D62B02E00B4460D /* MXScrollView */,
@@ -1047,6 +1080,7 @@
 				D5785C351D65AEDF0070232C /* WeiboSDK.bundle in Resources */,
 				D5785BE41D65502A0070232C /* recommendData.plist in Resources */,
 				D5CFC1211D61420100AF9464 /* InfoPlist.strings in Resources */,
+				D54FE54A1D757708004D2BEA /* ChanceAdRes.bundle in Resources */,
 				D5770AE61D62B02E00B4460D /* MXScrollView.bundle in Resources */,
 				D5CFC1131D61404700AF9464 /* MobFoodListCell.xib in Resources */,
 				D5785C3B1D65AEDF0070232C /* WinSocialShareConfig.plist in Resources */,
@@ -1308,7 +1342,9 @@
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/Optional",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/PlatformSDK/QQSDK",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/Required",
+					"$(PROJECT_DIR)/FoodRecipes/lib/libChanceBundleAd",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/FoodRecipes/Other/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/FoodRecipes/Other/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1316,6 +1352,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/PlatformSDK/SinaWeiboSDK",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/PlatformSDK/WeChatSDK",
+					"$(PROJECT_DIR)/FoodRecipes/lib/libChanceBundleAd",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxconn.FoodRecipes;
@@ -1336,7 +1373,9 @@
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/Optional",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/PlatformSDK/QQSDK",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/Required",
+					"$(PROJECT_DIR)/FoodRecipes/lib/libChanceBundleAd",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/FoodRecipes/Other/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/FoodRecipes/Other/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1344,6 +1383,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/PlatformSDK/SinaWeiboSDK",
 					"$(PROJECT_DIR)/FoodRecipes/lib/WinSocialShareTool/ShareSDK/Support/PlatformSDK/WeChatSDK",
+					"$(PROJECT_DIR)/FoodRecipes/lib/libChanceBundleAd",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxconn.FoodRecipes;

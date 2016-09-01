@@ -153,18 +153,24 @@
 
 - (IBAction)cleanCacheClicked:(id)sender
 {
-    NSError *error = nil;
-    NSArray *dirArray = @[[self.cachesDir stringByAppendingPathComponent:@"com.hackemist.SDWebImageCache.default"], [self.cachesDir stringByAppendingPathComponent:@"default"]];
+    NSArray *dirArray = @[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject];
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    indicatorView.center = self.cleanCachesButton.center;
+    indicatorView.color = [UIColor brownColor];
+    [self.cleanCachesButton addSubview:indicatorView];
+    [indicatorView startAnimating];
     for (NSString *dir in dirArray) {
         NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dir error:nil];
         NSEnumerator *e = [contents objectEnumerator];
         NSString *filename;
         while ((filename = [e nextObject])) {
+            NSError *error = nil;
             NSString *filePath = [dir stringByAppendingPathComponent:filename];
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
         }
     }
     [self updateCachesSize];
+    [indicatorView stopAnimating];
 }
 
 - (IBAction)manageAdClicked:(id)sender

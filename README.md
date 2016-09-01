@@ -6,9 +6,13 @@ Tips:
 1.需要在lib中的WinSocialShareTool文件夹中导入shareSDK（支持新浪微博、腾讯QQ和微信功能）;
 2.需要在lib中导入libraries，框架为MobAPI相关库
 
-changes:
+2016.08.29=====changes:
 1.重新布局leftViewController视图
 2.修复WKWebView浏览记录过大的问题
 3.修复收藏菜单替换掉所有0导致不能原样还原菜单的问题
 4.更改菜谱分类视图为上下滑动模式
 5.新增广告管理模式(分为上线和未上线)
+
+
+2016.08.30=====changes:
+1.更新清理缓存的机制,即删除caches文件夹里的所有文件

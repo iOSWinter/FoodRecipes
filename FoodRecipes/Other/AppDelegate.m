@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "CangShuBundleAd.h"
+
+#define PublisherId @"825254494-CE1CD3-72C8-099A-98400A5FE"
 
 @interface AppDelegate ()
 
@@ -18,6 +21,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [MobAPI registerApp:APPKey];
+    [CangShuBundleAd setPublisherID:PublisherId];
     UINavigationBar *navBar = [UINavigationBar appearance];
     [navBar setBackgroundImage:[UIImage imageNamed:@"nav"] forBarMetrics:UIBarMetricsDefault];
     [navBar setTintColor:[UIColor colorWithRed:255 / 255.0 green:148 / 255.0 blue:116 / 255.0 alpha:1]];

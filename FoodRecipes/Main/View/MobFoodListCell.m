@@ -39,7 +39,7 @@
         }
         self.title.text = model.name;
         NSString *recipes = [[model.recipe.ingredients substringWithRange:NSMakeRange(1, model.recipe.ingredients.length - 2)] stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-        self.desc.text = recipes ?: @"略";
+        self.desc.text = recipes ?: @"详见制作步骤";
         CGFloat descHeight = [self.desc.text boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 15 - 104 - 5 - 5, 80) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:14]} context:nil].size.height;
         self.descHeightConstraints.constant = descHeight <= 57 ? descHeight : 57;
     } else {

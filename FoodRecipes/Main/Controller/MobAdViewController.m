@@ -23,13 +23,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.webview = [[WKWebView alloc] initWithFrame:self.view.bounds];
+    self.webview = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, Width, self.view.height - 50)];
     self.webview.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.webview];
     self.webview.UIDelegate = self;
     self.webview.navigationDelegate= self;
     [self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.link]]];
     [self.indicatorView startAnimating];
+    
+    CSBBannerView *banner = [[CSBBannerView alloc] initWithFrame:CGRectMake(0, self.view.height - 114, Width, 50)];
+    [banner loadAd];
+    [self.view addSubview:banner];
 }
 
 - (void)shareItemClicked

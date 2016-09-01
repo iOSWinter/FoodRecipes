@@ -108,11 +108,11 @@
                                 </mask>
                                 <mask key="constraints">
                                     <exclude reference="hgj-zW-6Zw"/>
-                                    <exclude reference="Hha-Sm-ydg"/>
-                                    <exclude reference="Y7F-fM-EWq"/>
                                     <exclude reference="c3c-kN-FIT"/>
                                     <exclude reference="gIs-ze-5ss"/>
                                     <exclude reference="hsI-hv-yMS"/>
+                                    <exclude reference="Hha-Sm-ydg"/>
+                                    <exclude reference="Y7F-fM-EWq"/>
                                     <exclude reference="O48-EV-Yh4"/>
                                     <exclude reference="Pob-5L-2Sf"/>
                                 </mask>
@@ -126,11 +126,11 @@
                                 <mask key="constraints">
                                     <exclude reference="9ku-2v-Cax"/>
                                     <include reference="hgj-zW-6Zw"/>
-                                    <include reference="Hha-Sm-ydg"/>
-                                    <include reference="Y7F-fM-EWq"/>
                                     <include reference="c3c-kN-FIT"/>
                                     <include reference="gIs-ze-5ss"/>
                                     <include reference="hsI-hv-yMS"/>
+                                    <include reference="Hha-Sm-ydg"/>
+                                    <include reference="Y7F-fM-EWq"/>
                                     <include reference="O48-EV-Yh4"/>
                                     <include reference="Pob-5L-2Sf"/>
                                 </mask>
@@ -591,6 +591,8 @@
                         </mask>
                         <mask key="constraints">
                             <exclude reference="2Wk-kd-hSS"/>
+                            <exclude reference="ik8-gU-ZkD"/>
+                            <exclude reference="ybI-HA-eZd"/>
                             <exclude reference="2dB-Md-Nla"/>
                             <exclude reference="FO7-Ig-Cp3"/>
                             <exclude reference="f3H-5I-C3V"/>
@@ -609,8 +611,6 @@
                             <exclude reference="JKa-Fr-e2S"/>
                             <exclude reference="eIH-0L-qBj"/>
                             <exclude reference="uKQ-Cz-Yxh"/>
-                            <exclude reference="ik8-gU-ZkD"/>
-                            <exclude reference="ybI-HA-eZd"/>
                         </mask>
                     </variation>
                     <variation key="heightClass=regular-widthClass=compact">
@@ -619,6 +619,8 @@
                         </mask>
                         <mask key="constraints">
                             <include reference="2Wk-kd-hSS"/>
+                            <include reference="ik8-gU-ZkD"/>
+                            <include reference="ybI-HA-eZd"/>
                             <include reference="2dB-Md-Nla"/>
                             <include reference="FO7-Ig-Cp3"/>
                             <include reference="f3H-5I-C3V"/>
@@ -637,8 +639,6 @@
                             <include reference="JKa-Fr-e2S"/>
                             <include reference="eIH-0L-qBj"/>
                             <include reference="uKQ-Cz-Yxh"/>
-                            <include reference="ik8-gU-ZkD"/>
-                            <include reference="ybI-HA-eZd"/>
                         </mask>
                     </variation>
                 </view>

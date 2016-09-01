@@ -42,9 +42,9 @@
     [self setupViewStyle];
     [self addDone];
     [self fetchAdvertisementData];
-    self.imgUrl.text = @"http://sc.wenweipo.com/pic/20120309/20120309141737_88049.jpg";
-    self.redirectUrl.text = @"http://news.baidu.com/ns?tn=news&word=郫县";
-    self.titleName.text = @"郫县房价";
+//    self.imgUrl.text = @"http://sc.wenweipo.com/pic/20120309/20120309141737_88049.jpg";
+//    self.redirectUrl.text = @"http://news.baidu.com/ns?word=%DB%AF%CF%D8&tn=news&from=news&cl=2&rn=20&ct=1";
+//    self.titleName.text = @"郫县新闻";
 }
 
 - (void)setupAddView
@@ -109,7 +109,9 @@
 
 - (void)addNewItem
 {
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    if ((self.onlineDataArray.count + self.offlineDataArray.count) > 0) {        
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self updateAddViewLocation:YES];
         [self updateConfirmButtonTitle:@"确定添加"];

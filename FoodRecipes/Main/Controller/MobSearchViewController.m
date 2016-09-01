@@ -11,7 +11,7 @@
 #import "MobFoodListCell.h"
 #import "MJRefresh.h"
 
-@interface MobSearchViewController () <UITextFieldDelegate>
+@interface MobSearchViewController () <UITextFieldDelegate, CSBBannerViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) NSMutableArray *recordDataArray;
@@ -21,6 +21,9 @@
 @property (nonatomic, assign) BOOL searchResult;
 @property (nonatomic, strong) NSString *lastString;
 @property (nonatomic, strong) NSMutableArray *lastDataArray;
+@property (nonatomic, assign) BOOL didShow;
+@property (nonatomic, assign) BOOL shouldHide;
+@property (nonatomic, strong) UIView *headerView;
 
 @end
 
@@ -55,12 +58,44 @@
     searchButton.tintColor = [UIColor orangeColor];
     [searchButton addTarget:self action:@selector(searchFoodRecipes) forControlEvents:UIControlEventTouchUpInside];
     [headerView addSubview:searchButton];
+    CSBBannerView *banner = [[CSBBannerView alloc] initWithFrame:CGRectMake(0, search.y + search.height + 10, Width, 50)];
+    banner.delegate = self;
+    [banner loadAd];
+    [headerView addSubview:banner];
+    _headerView = headerView;
     self.tableView.tableHeaderView = headerView;
     
     self.indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.indicatorView.center = self.view.center;
     self.indicatorView.color = [UIColor grayColor];
     [self.view addSubview:self.indicatorView];
+}
+// banner的代理
+- (void)csbBannerViewShowFailure:(NSString *)errorMsg
+{
+    self.shouldHide = YES;
+    if (self.didShow == YES) {
+        self.didShow = NO;
+        self.headerView.height = 50;
+        self.tableView.tableHeaderView = self.headerView;
+    }
+}
+- (void)csbBannerViewShowSuccess
+{
+    self.shouldHide = NO;
+    if (self.didShow == NO) {
+        self.didShow = YES;
+        self.headerView.height = 100;
+        self.tableView.tableHeaderView = self.headerView;
+    }
+}
+- (void)csbBannerViewRemoved
+{
+    if (self.didShow && self.shouldHide == YES) {
+        self.didShow = NO;
+        self.headerView.height = 50;
+        self.tableView.tableHeaderView = self.headerView;
+    }
 }
 
 - (void)searchFoodRecipes
@@ -76,9 +111,6 @@
         return;
     }
     [MobAPI sendRequestWithInterface:@"/v1/cook/menu/search" param:@{@"key" : APPKey, @"name" : self.search.text ?: self.search.placeholder, @"page" : @(self.dataArray.count / 20 + 1)} onResult:^(MOBAResponse *response) {
-        if (self.tableView.mj_footer == nil) {
-            self.tableView.mj_footer = [MJRefreshAutoGifFooter footerWithRefreshingTarget:self refreshingAction:@selector(searchFoodRecipes)];
-        }
         [self.tableView.mj_footer endRefreshing];
         if (self.indicatorView) {
             [self.indicatorView stopAnimating];
@@ -87,6 +119,9 @@
             [FAFProgressHUD showError:@"查询不到数据" icon:nil color:nil];
             [self.tableView reloadData];
         } else {
+            if (self.tableView.mj_footer == nil) {
+                self.tableView.mj_footer = [MJRefreshAutoGifFooter footerWithRefreshingTarget:self refreshingAction:@selector(searchFoodRecipes)];
+            }
             self.searchResult = YES;
             [self.tableView registerNib:[UINib nibWithNibName:@"MobFoodListCell" bundle:nil] forCellReuseIdentifier:@"searchListCell"];
             self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
