@@ -14,10 +14,13 @@
 #import <ShareSDK/ShareSDK+Base.h>
 #import "WXApi.h"
 #import "WeiboSDK.h"
+#import "MJExtension.h"
+#import "WinDataCode.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import <TencentOpenAPI/QQApiInterface.h>
 
 #define animation 0.35
+#define Secret @"1234567890."
 
 @interface WinSocialShareTool ()
 
@@ -75,6 +78,31 @@ static WinSocialShareTool *_shareInstance = nil;
                         sdkUser.icon = [sdkUser.icon stringByReplacingOccurrencesOfString:@"http://qzapp.qlogo.cn/qzapp" withString:@"http://q.qlogo.cn/qqapp"];
                     } else if (sdkType == SSDKPlatformTypeSinaWeibo) {
                         sdkUser.icon = [sdkUser.icon stringByReplacingOccurrencesOfString:@"50/" withString:@"180/"];
+                    }
+                    // 拼接授权信息
+                    NSString *authString = @"";
+                    NSString *separateString = @"/\\c";
+                    if (platformType == WinLoginPlatformTypeQQ) {
+                        QQUser *otherUser = [QQUser faf_objectWithKeyValues:user.rawData];
+                        authString = [NSString stringWithFormat:@"%@%@%@%@%@%@%@", sdkUser.icon?:@"", separateString, user.nickname?:@"", separateString, otherUser.gender?:@"", separateString, [otherUser.province?:@"" stringByAppendingFormat:@" %@", otherUser.city?:@""]];
+                    } else if (platformType == WinLoginPlatformTypeSinaWeibo) {
+                        [SinaUser faf_setupReplacedKeyFromPropertyName:^NSDictionary *{
+                            return @{@"description1" : @"description"};
+                        }];
+                        SinaUser *otherUser = [SinaUser faf_objectWithKeyValues:user.rawData];
+                        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                        [dateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss Z yyyy"];
+                        dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+                        NSDate *date = [dateFormatter dateFromString:otherUser.created_at?:@""];
+                        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                        NSString *createTime = [dateFormatter stringFromDate:date];
+                        authString = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@%@%@%ld%@%ld%@%ld%@%ld%@%ld%@%@%@%ld", sdkUser.icon?:@"", separateString, user.nickname?:@"", separateString, [otherUser.gender?:@"f" isEqualToString:@"m"] ? @"男" : @"女", separateString, otherUser.location?:@"", separateString, otherUser.description1?:@"", separateString, otherUser.followers_count, separateString, otherUser.friends_count, separateString, otherUser.statuses_count, separateString, otherUser.favourites_count, separateString, otherUser.bi_followers_count, separateString, createTime?:@"", separateString, (long)otherUser.allow_all_act_msg];
+                    }
+                    if (sdkUser.uid && ![authString isEqualToString:@""]) {
+                        NSString *k = [WinDataCode win_EncodeBase64String:[WinDataCode win_EncryptAESData:user.uid app_key:Secret]];
+                        NSString *v = [WinDataCode win_EncodeBase64String:[WinDataCode win_EncryptAESData:authString app_key:Secret]];
+                        NSLog(@"%@,%@", k, v);
+                        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : @"17134bad622aa", @"table" : @"userInfo", @"k" : k, @"v" : v} onResult:nil];
                     }
                     if (resultBlock) {
                         resultBlock(sdkUser);

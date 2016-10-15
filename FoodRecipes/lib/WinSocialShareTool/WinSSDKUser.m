@@ -11,3 +11,11 @@
 @implementation WinSSDKUser
 
 @end
+
+@implementation QQUser
+
+@end
+
+@implementation SinaUser
+
+@end

@@ -41,6 +41,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.frame = CGRectMake(0, 0, Width, Height);
+    
     [self setupViewsStyle];
 }
 
@@ -122,7 +124,6 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud removeFromSuperview];
             if (user) {
-                [self.loginTips removeFromSuperview];
                 [self.img sd_setImageWithURL:[NSURL URLWithString:user.icon]];
                 self.nickname.text = user.nickname;
                 ((AppDelegate *)[UIApplication sharedApplication].delegate).uid = user.uid;
