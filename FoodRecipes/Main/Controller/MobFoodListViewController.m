@@ -13,6 +13,7 @@
 #import "MobCarefulSelectionModel.h"
 #import "MobFoodListCell.h"
 #import "MJRefresh.h"
+#import "MobAdvertiseModel.h"
 
 @interface MobFoodListViewController ()
 
@@ -172,9 +173,13 @@
         [self.navigationController pushViewController:vc animated:YES];
     } else {
         MobAdViewController *vc = [[MobAdViewController alloc] init];
-//        vc.link = ((MobCarefulSelectionModel *)self.dataArray[indexPath.row]).sourceUrl;
-        vc.title = self.title;
-        vc.model = self.dataArray[indexPath.row];
+        MobCarefulSelectionModel *cModel = self.dataArray[indexPath.row];
+        MobAdvertiseModel *model = [[MobAdvertiseModel alloc] init];
+        model.link = cModel.sourceUrl;
+        model.title = cModel.title;
+        model.type = AdvertisementType_OtherWeb;
+        model.imgUrl = cModel.thumbnails;
+        vc.adModel = model;
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

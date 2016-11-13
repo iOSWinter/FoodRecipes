@@ -13,6 +13,5 @@
 @interface MobAdViewController : UIViewController
 
 @property (nonatomic, strong) MobAdvertiseModel *adModel;
-@property (nonatomic, strong) MobCarefulSelectionModel *model;
 
 @end

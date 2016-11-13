@@ -67,7 +67,7 @@
 {
     NSString *imgKey = nil;
     NSMutableArray *shareImgs = [NSMutableArray array];
-    imgKey = [self.model.thumbnails componentsSeparatedByString:@"$"].lastObject ?: nil;
+    imgKey = [self.adModel.imgUrl componentsSeparatedByString:@"$"].lastObject ?: nil;
     if (imgKey) {
         UIImage *shareImg = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:imgKey] ?: [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imgKey];
         if (shareImg) {
@@ -78,7 +78,7 @@
     if (shareImgs.count == 0) {
         [shareImgs addObject:[UIImage imageNamed:@"shareDefault"]];
     }
-    [WinSocialShareTool win_shareTitle:@"精选美图" images:shareImgs content:self.adModel.title > 0 ? self.adModel.title : @"美食菜谱" urlString:self.adModel.link recommendCid:self.model.currentId];
+    [WinSocialShareTool win_shareTitle:@"精选美图" images:shareImgs content:self.adModel.title > 0 ? self.adModel.title : @"美食菜谱" urlString:self.adModel.link recommendCid:@"1"];
 }
 
 - (void)setupBannerView
@@ -264,9 +264,7 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     [self.indicatorView stopAnimating];
-    if (self.model) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"shareIcon"] style:UIBarButtonItemStyleDone target:self action:@selector(shareItemClicked)];
-    }
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"shareIcon"] style:UIBarButtonItemStyleDone target:self action:@selector(shareItemClicked)];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
