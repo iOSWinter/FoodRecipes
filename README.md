@@ -16,3 +16,8 @@ Tips:
 
 2016.08.30=====changes:
 1.更新清理缓存的机制,即删除caches文件夹里的所有文件
+
+2016.11.14=====changes:
+1.新增Google AdMob框架代码
+2.新增美图推荐图片ListView和图片浏览器
+3.更新AdvertisementModel模型文件
