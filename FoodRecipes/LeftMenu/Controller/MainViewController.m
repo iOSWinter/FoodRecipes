@@ -18,10 +18,11 @@
 #import "MobFoodRecipes.h"
 #import "MXScrollView.h"
 #import "MJRefresh.h"
+#import <GoogleMobileAds/GoogleMobileAds.h>
 
-#define adViewHWRate 0.55
+#define adViewHWRate 0.6
 
-@interface MainViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource, CSBBannerViewDelegate>
+@interface MainViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource, GADBannerViewDelegate>
 
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (nonatomic, strong) MXImageScrollView *adsView;
@@ -39,9 +40,8 @@
 @property (nonatomic, retain) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSString *recommendFilePath;
 @property (nonatomic, strong) NSString *advertiseCachesFilePath;
-@property (nonatomic, assign) BOOL didShow;
-@property (nonatomic, assign) BOOL shouldHide;
-@property (nonatomic, strong) CSBBannerView *banner;
+@property (nonatomic, assign) BOOL shouldShow;
+@property (nonatomic, strong) GADBannerView *banner;
 
 @end
 
@@ -61,6 +61,7 @@
     [self setupTableview];
     [self fetchCollectionViewData];
     [self fetchRecommendData];
+    [self setupBannerView];
     
     self.scrollView.mj_header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(refreshRecommendData)];
     
@@ -105,9 +106,10 @@
     _size = [UIScreen mainScreen].bounds.size;
     _scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     [self.view addSubview:_scrollView];
+    self.scrollView.showsVerticalScrollIndicator = NO;
     MXImageScrollView *adsView = [[MXImageScrollView alloc] initWithFrame:CGRectMake(0, 0, self.size.width, self.size.width * adViewHWRate)];
     adsView.showAnimotion = YES;
-    adsView.scrollIntervalTime = 4;
+    adsView.scrollIntervalTime = 500;
     adsView.animotionType = kMXTransitionReveal;
     adsView.animotionDirection = kMXTransitionDirectionFromRight;
     adsView.pageControlPosition = kMXPageControlPositionBottom;
@@ -115,15 +117,25 @@
     [[NSFileManager defaultManager] createDirectoryAtPath:docDir withIntermediateDirectories:YES attributes:nil error:nil];
     _advertiseCachesFilePath = [docDir stringByAppendingPathComponent:@"caches.dat"];
     NSArray *adArray = [NSArray arrayWithContentsOfFile:self.advertiseCachesFilePath];
-    if (adArray != nil) {
-        adsView.images = adArray.firstObject;
+    
+    if (adArray.count > 0) {
+        NSMutableArray *adModelArray = [NSMutableArray array];
+        NSMutableArray *adImgArray = [NSMutableArray array];
+        for(NSInteger i = 0; i < adArray.count; i++){
+            NSString *json = adArray[i];
+            NSData *jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *valueDict = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+            MobAdvertiseModel *model = [MobAdvertiseModel faf_objectWithKeyValues:valueDict];
+            [adModelArray addObject:model];
+            [adImgArray addObject:model.imgUrl];
+        }
+        adsView.images = adImgArray;
         __weak MainViewController *weakSelf = self;
         adsView.tapImageHandle = ^(NSInteger index) {
             [weakSelf.navBar removeFromSuperview];
             weakSelf.navBar = nil;
             MobAdViewController *vc = [[MobAdViewController alloc] init];
-            vc.link = adArray[1][index];
-            vc.title = adArray.lastObject[index];
+            vc.adModel = adModelArray[index];
             [weakSelf.navController pushViewController:vc animated:YES];
         };
     }
@@ -162,34 +174,46 @@
 
 - (void)setupBannerView
 {
-    CSBBannerView *banner = [[CSBBannerView alloc] initWithFrame:CGRectMake(0, self.collectionViewContainer.frame.origin.y + self.collectionViewContainer.frame.size.height + 2, Width, 50)];
-    banner.delegate = self;
-    [banner loadAd];
-    [self.scrollView addSubview:banner];
-    _banner = banner;
+    _banner = [[GADBannerView alloc] initWithFrame:CGRectMake(0, self.collectionViewContainer.frame.origin.y + self.collectionViewContainer.frame.size.height + 2, Width, 50)];
+    self.banner.adUnitID = AdMobBannerID;
+    self.banner.rootViewController = self;
+    self.banner.delegate = self;
+    GADRequest *request = [GADRequest request];
+    [self.banner loadRequest:request];
+    [self.scrollView addSubview:self.banner];
+    self.shouldShow = YES;
 }
-// banner的代理
-- (void)csbBannerViewShowFailure:(NSString *)errorMsg
+
+- (void)adViewDidReceiveAd:(GADBannerView *)bannerView
 {
-    self.shouldHide = YES;
-    if (self.didShow == YES) {
-        self.didShow = NO;
-        self.tableview.y = self.tableview.y - 50;
+    if (self.shouldShow) {
+        self.shouldShow = NO;
+        __weak MainViewController *weakSelf = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            [UIView animateWithDuration:0.3 animations:^{
+                
+                weakSelf.tableview.y += 50;
+                weakSelf.tableview.contentSize = CGSizeMake(Width, weakSelf.tableview.contentSize.height + 50);
+                [weakSelf.view layoutIfNeeded];
+            }];
+        });
     }
 }
-- (void)csbBannerViewShowSuccess
+
+- (void)adView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(GADRequestError *)error
 {
-    self.shouldHide = NO;
-    if (self.didShow == NO) {
-        self.didShow = YES;
-        self.tableview.y = self.tableview.y + 50;
-    }
-}
-- (void)csbBannerViewRemoved
-{
-    if (self.didShow && self.shouldHide == YES) {
-        self.didShow = NO;
-        self.tableview.y = self.tableview.y - 50;
+    if (!self.shouldShow) {
+        self.shouldShow = YES;
+        __weak MainViewController *weakSelf = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.3 animations:^{
+                
+                weakSelf.tableview.y -= 50;
+                weakSelf.tableview.contentSize = CGSizeMake(Width, weakSelf.tableview.contentSize.height - 50);
+                [weakSelf.view layoutIfNeeded];
+            }];
+        });
     }
 }
 
@@ -208,30 +232,31 @@
 - (void)fetchAdvertisementData
 {
     __weak MainViewController *weakSelf = self;
-    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"advertisement", @"page" : @"1", @"size" : @"50"} onResult:^(MOBAResponse *response) {
+    [MobAPI sendRequestWithInterface:@"/ucache/getall" param:@{@"key" : APPKey, @"table" : @"advertisement", @"page" : @"1", @"size" : AdvertisementRequestCount} onResult:^(MOBAResponse *response) {
         if (!response.error) {
             NSArray *adArray = response.responder[@"result"][@"data"];
-            NSMutableArray *imgUrlArray = [NSMutableArray array];
-            NSMutableArray *urlArray = [NSMutableArray array];
-            NSMutableArray *titleArray = [NSMutableArray array];
+            NSMutableArray *adCachesArray = [NSMutableArray array];
+            NSMutableArray *adModelArray = [NSMutableArray array];
+            NSMutableArray *adImgArray = [NSMutableArray array];
             for (NSInteger i = 0; i < adArray.count; i++) {
-                NSString *functionMark = [adArray[i][@"v"] componentsSeparatedByString:@","].lastObject;
-                if (functionMark.integerValue == 1) {
-                    [imgUrlArray addObject:adArray[i][@"k"]];
-                    NSArray *array = [adArray[i][@"v"] componentsSeparatedByString:@","];
-                    [urlArray addObject:array.firstObject];
-                    [titleArray addObject:array[1]];
+                NSString *jsonValue = [WinDataCode win_DecryptAESData:[GTMBase64 decodeString:adArray[i][@"v"]] app_key:Secret];
+                NSData *jsonData = [jsonValue dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *valueDict = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+                MobAdvertiseModel *model = [MobAdvertiseModel faf_objectWithKeyValues:valueDict];
+                if (model.valid) {
+                    [adCachesArray addObject:jsonValue];
+                    [adModelArray addObject:model];
+                    [adImgArray addObject:model.imgUrl];
                 }
             }
-            [@[imgUrlArray, urlArray, titleArray] writeToFile:self.advertiseCachesFilePath atomically:YES];
-            if (imgUrlArray.count > 0) {
-                self.adsView.images = imgUrlArray;
+            [adCachesArray writeToFile:self.advertiseCachesFilePath atomically:YES];
+            if (adModelArray.count > 0) {
+                self.adsView.images = adImgArray;
                 self.adsView.tapImageHandle = ^(NSInteger index){
                     [weakSelf.navBar removeFromSuperview];
                     weakSelf.navBar = nil;
                     MobAdViewController *vc = [[MobAdViewController alloc] init];
-                    vc.link = urlArray[index];
-                    vc.title = titleArray[index];
+                    vc.adModel = adModelArray[index];
                     [weakSelf.navController pushViewController:vc animated:YES];
                 };
             }
@@ -404,10 +429,9 @@
 // 下拉刷新
 - (void)refreshRecommendData
 {
-    [self fetchAdvertisementData];
     [self fetchLeastRecommendListData];
+    [self fetchAdvertisementData];
     self.banner.delegate = self;
-    [self.banner loadAd];
 }
 
 // 刷新tableview
@@ -416,6 +440,13 @@
     self.tableview.frame = CGRectMake(self.tableview.frame.origin.x, self.tableview.frame.origin.y, self.tableview.frame.size.width, 97 * (self.recommendDataArray.count +  self.checkedDataArray.count) + 35 * ((self.recommendDataArray.count > 0 ? 1 : 0) + (self.checkedDataArray.count > 0 ? 1 : 0)));
     self.scrollView.contentSize = CGSizeMake(self.size.width, self.tableview.frame.origin.y + self.tableview.frame.size.height + 64);
     [self.tableview reloadData];
+}
+
+- (void)setRefresh:(BOOL)refresh
+{
+    if (refresh) {
+        self.adsView.scrollIntervalTime = 5;
+    }
 }
 
 // 初始化

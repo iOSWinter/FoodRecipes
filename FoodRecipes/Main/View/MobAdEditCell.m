@@ -17,11 +17,17 @@
 
 @implementation MobAdEditCell
 
-- (void)setupDataWithDict:(NSDictionary *)dict
+- (void)setupDataWithModel:(MobAdvertiseModel *)model
 {
-    [self.img sd_setImageWithURL:[NSURL URLWithString:dict[@"k"]]];
-    self.url.text = dict[@"v"];
-    [self.url setAdjustsFontSizeToFitWidth:YES];
+    [self.img sd_setImageWithURL:[NSURL URLWithString:model.imgUrl]];
+    
+    NSString *valid = model.valid ? @"推荐中" : model.valided ? @"推荐过" : @"从未推荐";
+    NSString *textString = [model.title stringByAppendingFormat:@" %@ %@", valid, model.link];
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:textString attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16]}];
+    [attrString setAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:14]} range:[textString rangeOfString:model.title]];
+    [attrString setAttributes:@{NSForegroundColorAttributeName : model.valid ? [UIColor magentaColor] : model.valided ? [UIColor grayColor] : [UIColor brownColor]} range:[textString rangeOfString:valid]];
+    [attrString setAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13]} range:[textString rangeOfString:model.link]];
+    self.url.attributedText = attrString;
 }
 
 @end

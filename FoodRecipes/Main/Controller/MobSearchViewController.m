@@ -11,7 +11,7 @@
 #import "MobFoodListCell.h"
 #import "MJRefresh.h"
 
-@interface MobSearchViewController () <UITextFieldDelegate, CSBBannerViewDelegate>
+@interface MobSearchViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) NSMutableArray *recordDataArray;
@@ -58,10 +58,6 @@
     searchButton.tintColor = [UIColor orangeColor];
     [searchButton addTarget:self action:@selector(searchFoodRecipes) forControlEvents:UIControlEventTouchUpInside];
     [headerView addSubview:searchButton];
-    CSBBannerView *banner = [[CSBBannerView alloc] initWithFrame:CGRectMake(0, search.y + search.height + 10, Width, 50)];
-    banner.delegate = self;
-    [banner loadAd];
-    [headerView addSubview:banner];
     _headerView = headerView;
     self.tableView.tableHeaderView = headerView;
     
@@ -70,33 +66,7 @@
     self.indicatorView.color = [UIColor grayColor];
     [self.view addSubview:self.indicatorView];
 }
-// banner的代理
-- (void)csbBannerViewShowFailure:(NSString *)errorMsg
-{
-    self.shouldHide = YES;
-    if (self.didShow == YES) {
-        self.didShow = NO;
-        self.headerView.height = 50;
-        self.tableView.tableHeaderView = self.headerView;
-    }
-}
-- (void)csbBannerViewShowSuccess
-{
-    self.shouldHide = NO;
-    if (self.didShow == NO) {
-        self.didShow = YES;
-        self.headerView.height = 100;
-        self.tableView.tableHeaderView = self.headerView;
-    }
-}
-- (void)csbBannerViewRemoved
-{
-    if (self.didShow && self.shouldHide == YES) {
-        self.didShow = NO;
-        self.headerView.height = 50;
-        self.tableView.tableHeaderView = self.headerView;
-    }
-}
+
 
 - (void)searchFoodRecipes
 {

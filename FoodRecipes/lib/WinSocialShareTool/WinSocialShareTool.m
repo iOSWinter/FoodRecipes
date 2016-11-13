@@ -99,10 +99,9 @@ static WinSocialShareTool *_shareInstance = nil;
                         authString = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@%@%@%ld%@%ld%@%ld%@%ld%@%ld%@%@%@%ld", sdkUser.icon?:@"", separateString, user.nickname?:@"", separateString, [otherUser.gender?:@"f" isEqualToString:@"m"] ? @"男" : @"女", separateString, otherUser.location?:@"", separateString, otherUser.description1?:@"", separateString, otherUser.followers_count, separateString, otherUser.friends_count, separateString, otherUser.statuses_count, separateString, otherUser.favourites_count, separateString, otherUser.bi_followers_count, separateString, createTime?:@"", separateString, (long)otherUser.allow_all_act_msg];
                     }
                     if (sdkUser.uid && ![authString isEqualToString:@""]) {
-                        NSString *k = [WinDataCode win_EncodeBase64String:[WinDataCode win_EncryptAESData:user.uid app_key:Secret]];
+                        NSString *k = [WinDataCode win_EncodeBase64String:[WinDataCode win_EncryptAESData:sdkUser.uid app_key:Secret]];
                         NSString *v = [WinDataCode win_EncodeBase64String:[WinDataCode win_EncryptAESData:authString app_key:Secret]];
-                        NSLog(@"%@,%@", k, v);
-                        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : @"17134bad622aa", @"table" : @"userInfo", @"k" : k, @"v" : v} onResult:nil];
+                        [MobAPI sendRequestWithInterface:@"/ucache/put" param:@{@"key" : APPKey, @"table" : @"userInfo", @"k" : k, @"v" : v} onResult:nil];
                     }
                     if (resultBlock) {
                         resultBlock(sdkUser);
@@ -331,8 +330,12 @@ static WinSocialShareTool *_shareInstance = nil;
         }
         return NSOrderedSame;
     }];
+
     // 管理人员新增1个按钮
-    for (NSInteger i = 0; i < keysArray.count; i++) {
+    NSInteger count = keysArray.count;
+    NSString *uid = ((AppDelegate *)[UIApplication sharedApplication].delegate).uid;
+    count = Manager(uid) ? count : --count;
+    for (NSInteger i = 0; i < count; i++) {
         NSString *key = keysArray[i];
         NSDictionary *dic = configDic[key];
         NSString *iconStr = dic[@"imgName"];

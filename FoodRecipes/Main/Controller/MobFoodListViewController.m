@@ -172,7 +172,7 @@
         [self.navigationController pushViewController:vc animated:YES];
     } else {
         MobAdViewController *vc = [[MobAdViewController alloc] init];
-        vc.link = ((MobCarefulSelectionModel *)self.dataArray[indexPath.row]).sourceUrl;
+//        vc.link = ((MobCarefulSelectionModel *)self.dataArray[indexPath.row]).sourceUrl;
         vc.title = self.title;
         vc.model = self.dataArray[indexPath.row];
         [self.navigationController pushViewController:vc animated:YES];

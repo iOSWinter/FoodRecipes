@@ -94,7 +94,8 @@
         self.loginHeightConstraints.constant = 0;
         self.loginView.hidden = YES;
         self.logoutButton.hidden = NO;
-        if (([uid isEqualToString:@"WB5977475514"] || [uid isEqualToString:@"QQ805F4B09B2E96E9EB65A6E08FB92B05D"] || [uid isEqualToString:@"WB3455461862"])) {
+        if (Manager(uid)) {
+            
             self.manageAdHeightConstraints.constant = 55;
             self.RecommendHeightConstraints.constant = 55;
             self.manageAdButton.hidden = NO;
@@ -157,7 +158,7 @@
     NSArray *dirArray = @[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject];
     UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     indicatorView.center = self.cleanCachesButton.center;
-    indicatorView.color = [UIColor brownColor];
+    indicatorView.color = [UIColor orangeColor];
     [self.cleanCachesButton addSubview:indicatorView];
     [indicatorView startAnimating];
     for (NSString *dir in dirArray) {
@@ -170,8 +171,11 @@
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
         }
     }
-    [self updateCachesSize];
-    [indicatorView stopAnimating];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        [self updateCachesSize];
+        [indicatorView stopAnimating];
+    });
 }
 
 - (IBAction)manageAdClicked:(id)sender

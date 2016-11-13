@@ -11,15 +11,16 @@
 #import "MobFoodMethodCell.h"
 #import "UIImageView+WebCache.h"
 #import "WinSocialShareTool.h"
+#import <GoogleMobileAds/GoogleMobileAds.h>
 
-@interface MobFoodDetailViewController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, CSBBannerViewDelegate>
+@interface MobFoodDetailViewController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, GADBannerViewDelegate>
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UILabel *foodTitle;
 @property (weak, nonatomic) IBOutlet UIImageView *img;
 @property (weak, nonatomic) IBOutlet UILabel *desc;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imgHeightConstriants;
-@property (weak, nonatomic) IBOutlet UIView *adView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *adViewHeightConstraints;
+@property (weak, nonatomic) IBOutlet GADBannerView *adView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *adViewSpaceToBottomConstraints;
 @property (weak, nonatomic) IBOutlet UITableView *tableview;
 @property (weak, nonatomic) IBOutlet UILabel *summary;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewHeightConstraints;
@@ -80,34 +81,42 @@
 
 - (void)setupBannerView
 {
-    CSBBannerView *banner = [[CSBBannerView alloc] initWithFrame:CGRectZero];
-    banner.delegate = self;
-    [banner loadAd];
-    [self.adView addSubview:banner];
+    self.adView.adUnitID = AdMobBannerID;
+    self.adView.rootViewController = self;
+    self.adView.delegate = self;
+    GADRequest *request = [GADRequest request];
+    [self.adView loadRequest:request];
+    
+    __weak MobFoodDetailViewController *weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        weakSelf.adViewSpaceToBottomConstraints.constant = -50;
+
+    });
 }
-// banner的代理
-- (void)csbBannerViewShowFailure:(NSString *)errorMsg
+
+- (void)adViewDidReceiveAd:(GADBannerView *)bannerView
 {
-    self.shouldHide = YES;
-    if (self.didShow == YES) {
-        self.didShow = NO;
-        self.adViewHeightConstraints.constant = 0;
-    }
+    __weak MobFoodDetailViewController *weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    
+    self.scrollView.contentSize = CGSizeMake(Width, self.summary.frame.origin.y + self.summary.frame.size.height + 55);
+        [UIView animateWithDuration:0.3 animations:^{
+            weakSelf.adViewSpaceToBottomConstraints.constant = 5;
+            [weakSelf.view layoutIfNeeded];
+        }];
+    });
 }
-- (void)csbBannerViewShowSuccess
+
+- (void)adView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(GADRequestError *)error
 {
-    self.shouldHide = NO;
-    if (self.didShow == NO) {
-        self.didShow = YES;
-        self.adViewHeightConstraints.constant = 50;
-    }
-}
-- (void)csbBannerViewRemoved
-{
-    if (self.didShow && self.shouldHide == YES) {
-        self.didShow = NO;
-        self.adViewHeightConstraints.constant = 0;
-    }
+    __weak MobFoodDetailViewController *weakSelf = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    self.scrollView.contentSize = CGSizeMake(Width, self.summary.frame.origin.y + self.summary.frame.size.height + 10);
+        [UIView animateWithDuration:0.3 animations:^{
+            weakSelf.adViewSpaceToBottomConstraints.constant = -50;
+            [weakSelf.view layoutIfNeeded];
+        }];
+    });
 }
 
 - (void)fetchCollectData

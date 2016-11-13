@@ -13,10 +13,16 @@
 #import "MJExtension.h"
 #import "FAFProgressHUD+FAF.h"
 #import "UIView+SetRect.h"
-#import "CSBBannerView.h"
-#import "CSBInterstitial.h"
-//#define APPKey @"14872b483127a"
+#import "AppDelegate.h"
+#import "WinDataCode.h"
+
 #define APPKey @"164fbd751f32c"
+#define AdvertisementRequestCount @"1000"
+#define AdMobBannerID @"ca-app-pub-5510915524085951/8328123426"
+#define AdMobIntertitalID @"ca-app-pub-5510915524085951/9804856629"
+#define Secret @"FoodRecipes121604.+"
+
+#define Manager(uid) [uid isEqualToString:@"QQ805F4B09B2E96E9EB65A6E08FB92B05D"] || [uid isEqualToString:@"WB3455461862"]
 
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.

@@ -14,8 +14,9 @@
 #import "MobMyCollectViewController.h"
 #import "MobRecommendViewController.h"
 #import "UIView+SetRect.h"
+#import <GoogleMobileAds/GoogleMobileAds.h>
 
-@interface ViewController () <LeftViewControllerDelegate>
+@interface ViewController () <LeftViewControllerDelegate, GADInterstitialDelegate, GADBannerViewDelegate>
 // 右滑侧栏相关
 {
     CGFloat _screenWidth;
@@ -36,6 +37,10 @@
 @property (nonatomic, strong) NSString *titleName;
 @property (nonatomic, assign) BOOL special;
 @property (nonatomic, strong) UIImageView *imgView;
+
+@property (nonatomic, strong) UIView *launchView;
+@property (nonatomic, strong) GADBannerView *rectBannerView;
+@property (nonatomic, assign) BOOL adDidShow;
 
 @end
 
@@ -63,6 +68,96 @@
     // Pan gesture.
     self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureEvent:)];
     [self.mainView addGestureRecognizer:self.panGesture];
+    
+    [self showLaunchView];
+}
+
+- (void)showLaunchView
+{
+    UIView *launchView = [[UIView alloc] initWithFrame:self.navigationController.view.bounds];
+    launchView.backgroundColor = [UIColor whiteColor];
+    [self.navigationController.view addSubview:launchView];
+    self.launchView = launchView;
+    UIView *iconView = [[UIView alloc] initWithFrame:CGRectMake(0, Height, Width, 50)];
+    [self.launchView addSubview:iconView];
+    UIImageView *icon = [[UIImageView alloc] initWithFrame:CGRectMake((launchView.width - 80 - 50 - 10) * 0.5, 0, 50, 50)];
+    icon.image = [UIImage imageNamed:@"appIcon"];
+    icon.layer.cornerRadius = 10;
+    icon.layer.masksToBounds = YES;
+    [iconView addSubview:icon];
+    UILabel *appName = [[UILabel alloc] initWithFrame:CGRectMake(icon.x + icon.width + 10, icon.y, 80, icon.height)];
+    appName.text = @"美食菜谱";
+    appName.textColor = [UIColor grayColor];
+    [iconView addSubview:appName];
+    [UIView animateWithDuration:0.5 animations:^{
+        iconView.y -= 70;
+    }];
+    [self showRectangleBannerView];
+}
+
+- (void)showRectangleBannerView
+{
+    CGRect frame = CGRectMake((Width - 300) * 0.5, (Height - 70 - 250) * 0.5, 300, 250);
+    _rectBannerView = [[GADBannerView alloc] initWithFrame:frame];
+    [self.rectBannerView setAdSize:kGADAdSizeMediumRectangle];
+    self.rectBannerView.adUnitID = AdMobBannerID;
+    self.rectBannerView.rootViewController = self;
+    self.rectBannerView.delegate = self;
+    GADRequest *request = [GADRequest request];
+    [self.rectBannerView loadRequest:request];
+    [self.launchView addSubview:self.rectBannerView];
+    UIView *barTop = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _rectBannerView.width, 15)];
+    barTop.backgroundColor = [UIColor whiteColor];
+    [_rectBannerView addSubview:barTop];
+    UIView *barBottom = [[UIView alloc] initWithFrame:CGRectMake(0, _rectBannerView.height - barTop.height, _rectBannerView.width, barTop.height)];
+    barBottom.backgroundColor = [UIColor whiteColor];
+    [_rectBannerView addSubview:barBottom];
+    [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(removeLaunchViewWhenNotShowAd) userInfo:nil repeats:NO];
+}
+
+- (void)showAdView
+{
+    CGRect frame = CGRectMake((Width - 300) * 0.5, (Height - 70 - 250) * 0.5, 300, 250);
+    NSInteger sequence = arc4random() % 4 + 1;
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:frame];
+    imgView.image = [UIImage imageNamed:[NSString stringWithFormat:@"ad%ld.jpg", sequence]];
+    imgView.layer.cornerRadius = 5;
+    imgView.layer.masksToBounds = YES;
+    imgView.alpha = 0.9;
+    [self.launchView addSubview:imgView];
+}
+
+- (void)adViewDidReceiveAd:(GADBannerView *)bannerView
+{
+    self.adDidShow = YES;
+    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(removeLaunchView) userInfo:nil repeats:NO];
+}
+
+- (void)adView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(GADRequestError *)error
+{
+    self.adDidShow = YES;
+    [self showAdView];
+    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(removeLaunchView) userInfo:nil repeats:NO];
+}
+
+- (void)removeLaunchViewWhenNotShowAd
+{
+    if (!self.adDidShow) {
+        [self removeLaunchView];
+    }
+}
+
+- (void)removeLaunchView
+{
+    self.mainViewController.refresh = YES;
+    __weak ViewController *weakSelf = self;
+    [UIView animateWithDuration:0.3 animations:^{
+        
+        weakSelf.launchView.y = Height;
+    } completion:^(BOOL finished) {
+        
+        [weakSelf.launchView removeFromSuperview];
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated

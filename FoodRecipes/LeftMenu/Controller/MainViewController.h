@@ -12,5 +12,7 @@
 
 @property (nonatomic, strong) UINavigationController *navController;
 @property (nonatomic, strong) UINavigationBar *navBar;
+/** 刷新 */
+@property (nonatomic, assign) BOOL refresh;
 
 @end

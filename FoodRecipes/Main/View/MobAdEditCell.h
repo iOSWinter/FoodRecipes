@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MobAdvertiseModel.h"
 
 @interface MobAdEditCell : UITableViewCell
 
-- (void)setupDataWithDict:(NSDictionary *)dict;
+- (void)setupDataWithModel:(MobAdvertiseModel *)model;
 
 @end

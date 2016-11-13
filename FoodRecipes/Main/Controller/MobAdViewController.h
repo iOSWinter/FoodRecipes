@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "MobCarefulSelectionModel.h"
+#import "MobAdvertiseModel.h"
 
 @interface MobAdViewController : UIViewController
 
-@property (nonatomic, strong) NSString *link;
+@property (nonatomic, strong) MobAdvertiseModel *adModel;
 @property (nonatomic, strong) MobCarefulSelectionModel *model;
 
 @end
